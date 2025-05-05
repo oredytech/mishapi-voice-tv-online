@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Menu, X, Moon, Sun, ChevronRight, ChevronLeft } from 'lucide-react';
+import { Menu, X, Moon, Sun, ChevronRight, ChevronLeft, Tv, Radio } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useTheme } from '@/hooks/useTheme';
 import { useIsMobile } from '@/hooks/use-mobile';
@@ -66,20 +66,16 @@ export default function Navbar() {
     name: "Accueil",
     path: "/"
   }, {
-    name: "Direct TV",
-    path: "/tv"
+    name: "",
+    path: "/tv",
+    icon: <Tv className="h-5 w-5" />
   }, {
-    name: "Direct Radio",
-    path: "/radio"
+    name: "",
+    path: "/radio",
+    icon: <Radio className="h-5 w-5" />
   }, {
-    name: "Actualités",
+    name: "Catégories",
     path: "/actualites"
-  }, {
-    name: "Replay",
-    path: "/replay"
-  }, {
-    name: "Programmes",
-    path: "/programmes"
   }, {
     name: "À propos",
     path: "/a-propos"
@@ -111,14 +107,14 @@ export default function Navbar() {
           <Link to="/" className="flex items-center">
             <img src="/lovable-uploads/f7567e17-97fe-409c-9fdb-892bff8326de.png" alt="MISHAPI VOICE TV Logo" className="h-12 mr-3" />
             <div className="hidden sm:flex flex-col">
-              
+              <span className="text-sm text-muted-foreground">La vision africaine dans le monde</span>
             </div>
           </Link>
           
           {/* Desktop Menu */}
           <div className="hidden md:flex md:items-center md:space-x-2">
-            {navLinks.map(link => <Link key={link.name} to={link.path} className={`nav-link ${location.pathname === link.path ? "active" : ""}`}>
-                {link.name}
+            {navLinks.map(link => <Link key={link.path} to={link.path} className={`nav-link flex items-center ${location.pathname === link.path ? "active" : ""}`}>
+                {link.icon || link.name}
               </Link>)}
             
             {/* Category Menu Trigger for Desktop */}
@@ -159,8 +155,8 @@ export default function Navbar() {
         {/* Mobile Menu */}
         <div className={`md:hidden ${isMenuOpen ? "max-h-screen opacity-100" : "max-h-0 opacity-0"} overflow-hidden transition-all duration-300 ease-in-out`}>
           <div className="flex flex-col py-4 space-y-2">
-            {navLinks.map(link => <Link key={link.name} to={link.path} className={`px-3 py-2.5 ${location.pathname === link.path ? "bg-muted font-medium text-primary" : "text-foreground/80"} rounded-md`} onClick={() => setIsMenuOpen(false)}>
-                {link.name}
+            {navLinks.map(link => <Link key={link.path} to={link.path} className={`px-3 py-2.5 flex items-center ${location.pathname === link.path ? "bg-muted font-medium text-primary" : "text-foreground/80"} rounded-md`} onClick={() => setIsMenuOpen(false)}>
+                {link.icon || link.name}
               </Link>)}
           </div>
         </div>
