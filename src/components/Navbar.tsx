@@ -107,7 +107,7 @@ export default function Navbar() {
           <Link to="/" className="flex items-center">
             <img src="/lovable-uploads/f7567e17-97fe-409c-9fdb-892bff8326de.png" alt="MISHAPI VOICE TV Logo" className="h-12 mr-3" />
             <div className="hidden sm:flex flex-col">
-              <span className="text-sm text-muted-foreground">La vision africaine dans le monde</span>
+              
             </div>
           </Link>
           
