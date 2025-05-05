@@ -145,6 +145,16 @@
   .social-icon {
     @apply h-10 w-10 flex items-center justify-center rounded-full bg-muted hover:bg-muted/80 text-foreground transition-colors;
   }
+
+  /* Hide scrollbar but keep functionality */
+  .scrollbar-none {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  .scrollbar-none::-webkit-scrollbar {
+    display: none;
+  }
 }
 
 /* Custom animation for the live indicator */
@@ -166,3 +176,4 @@
 .media-player audio {
   @apply w-full;
 }
+
