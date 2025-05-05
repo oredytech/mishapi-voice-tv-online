@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowRight } from 'lucide-react';
@@ -10,83 +9,70 @@ import { ProgramCard } from '@/components/ProgramCard';
 import { NewsCard } from '@/components/NewsCard';
 import LiveSection from '@/components/LiveSection';
 import FloatingPlayer from '@/components/FloatingPlayer';
-
-const todaysPrograms = [
-  {
-    title: "Journal Matinal",
-    time: "06:00 - 07:00",
-    description: "Le point sur l'actualité nationale et internationale avec notre équipe de journalistes.",
-    host: "Jean Kabongo",
-    category: "Actualités",
-    isLive: false,
-  },
-  {
-    title: "Débat Éco",
-    time: "12:30 - 13:30",
-    description: "Analyse des enjeux économiques actuels en RDC et en Afrique.",
-    host: "Marie Lusamba",
-    category: "Économie",
-    isLive: true,
-  },
-  {
-    title: "Culture Express",
-    time: "15:00 - 16:00",
-    description: "Toute l'actualité culturelle et artistique de la région.",
-    host: "Patrick Muyaya",
-    category: "Culture",
-    isLive: false,
-  },
-];
-
-const latestNews = [
-  {
-    id: "1",
-    title: "La RDC lance un nouveau programme d'électrification rurale",
-    excerpt: "Le gouvernement vient d'annoncer un ambitieux plan d'électrification qui touchera plus de 200 villages dans l'est du pays.",
-    image: "https://images.unsplash.com/photo-1605810230434-7631ac76ec81?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=800&q=80",
-    category: "Développement",
-    date: "Aujourd'hui à 10:45",
-    author: "Jean Kabongo",
-  },
-  {
-    id: "2",
-    title: "Festival de musique à Goma : les artistes locaux à l'honneur",
-    excerpt: "La 5ème édition du festival Amani a réuni plus de 30 artistes congolais et internationaux pour célébrer la paix et la culture.",
-    image: "https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=800&q=80",
-    category: "Culture",
-    date: "Hier à 18:20",
-    author: "Marie Lusamba",
-  },
-  {
-    id: "3",
-    title: "Nouveau partenariat pour l'exploitation minière responsable",
-    excerpt: "Un accord majeur a été signé entre la RDC et plusieurs entreprises internationales pour garantir des pratiques minières plus éthiques.",
-    image: "https://images.unsplash.com/photo-1466442929976-97f336a657be?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=800&q=80",
-    category: "Économie",
-    date: "02 Mai 2025",
-    author: "Patrick Muyaya",
-  },
-];
-
+const todaysPrograms = [{
+  title: "Journal Matinal",
+  time: "06:00 - 07:00",
+  description: "Le point sur l'actualité nationale et internationale avec notre équipe de journalistes.",
+  host: "Jean Kabongo",
+  category: "Actualités",
+  isLive: false
+}, {
+  title: "Débat Éco",
+  time: "12:30 - 13:30",
+  description: "Analyse des enjeux économiques actuels en RDC et en Afrique.",
+  host: "Marie Lusamba",
+  category: "Économie",
+  isLive: true
+}, {
+  title: "Culture Express",
+  time: "15:00 - 16:00",
+  description: "Toute l'actualité culturelle et artistique de la région.",
+  host: "Patrick Muyaya",
+  category: "Culture",
+  isLive: false
+}];
+const latestNews = [{
+  id: "1",
+  title: "La RDC lance un nouveau programme d'électrification rurale",
+  excerpt: "Le gouvernement vient d'annoncer un ambitieux plan d'électrification qui touchera plus de 200 villages dans l'est du pays.",
+  image: "https://images.unsplash.com/photo-1605810230434-7631ac76ec81?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=800&q=80",
+  category: "Développement",
+  date: "Aujourd'hui à 10:45",
+  author: "Jean Kabongo"
+}, {
+  id: "2",
+  title: "Festival de musique à Goma : les artistes locaux à l'honneur",
+  excerpt: "La 5ème édition du festival Amani a réuni plus de 30 artistes congolais et internationaux pour célébrer la paix et la culture.",
+  image: "https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=800&q=80",
+  category: "Culture",
+  date: "Hier à 18:20",
+  author: "Marie Lusamba"
+}, {
+  id: "3",
+  title: "Nouveau partenariat pour l'exploitation minière responsable",
+  excerpt: "Un accord majeur a été signé entre la RDC et plusieurs entreprises internationales pour garantir des pratiques minières plus éthiques.",
+  image: "https://images.unsplash.com/photo-1466442929976-97f336a657be?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=800&q=80",
+  category: "Économie",
+  date: "02 Mai 2025",
+  author: "Patrick Muyaya"
+}];
 const Index = () => {
   const [isRadioPlayerVisible, setIsRadioPlayerVisible] = useState(false);
-
-  return (
-    <div className="min-h-screen">
+  return <div className="min-h-screen">
       {/* Hero Section */}
       <section className="pt-6 pb-12">
         <div className="container-custom">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
             <div className="lg:col-span-5 flex flex-col">
-              <h1 className="text-4xl md:text-5xl font-bold leading-tight mb-4">
+              <h1 className="font-bold leading-tight mb-4 text-4xl text-center md:text-3xl">
                 MISHAPI VOICE TV
-                <span className="text-primary block mt-1">L'information qui vous inspire</span>
+                <span className="text-primary block mt-1 text-center text-base">La vision Africaine dans le Monde</span>
               </h1>
-              <p className="text-lg text-muted-foreground mb-8">
+              <p className="text-muted-foreground mb-8 text-center text-lg">
                 Chaîne de référence dans l'Est de la RDC, diffusant des émissions axées sur le développement 
                 de la République Démocratique du Congo et de toute l'Afrique.
               </p>
-              <div className="flex flex-col sm:flex-row gap-4">
+              <div className="flex flex-col sm:flex-row gap-4 px-0">
                 <Button className="btn-tv" asChild>
                   <Link to="/tv">
                     Regarder la TV en direct
@@ -102,11 +88,7 @@ const Index = () => {
                 <p className="text-sm font-medium mb-2">Également disponible sur:</p>
                 <div className="flex items-center">
                   <div className="flex items-center justify-center px-3 py-1 border rounded-md">
-                    <img 
-                      src="/placeholder.svg" 
-                      alt="Canal+" 
-                      className="h-5 mr-2" 
-                    />
+                    <img alt="Canal+" className="h-5 mr-2" src="/lovable-uploads/4cb2b446-5308-4cf3-a5d6-71657789fd7d.jpg" />
                     <span className="text-sm">Canal 363</span>
                   </div>
                 </div>
@@ -115,11 +97,7 @@ const Index = () => {
             
             <div className="lg:col-span-7">
               <div className="rounded-lg overflow-hidden">
-                <VideoPlayer 
-                  videoUrl="https://example.com/tv-stream" 
-                  title="MISHAPI VOICE TV - Direct" 
-                  poster="https://images.unsplash.com/photo-1605810230434-7631ac76ec81?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=800&q=80"
-                />
+                <VideoPlayer videoUrl="https://example.com/tv-stream" title="MISHAPI VOICE TV - Direct" poster="https://images.unsplash.com/photo-1605810230434-7631ac76ec81?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=800&q=80" />
               </div>
             </div>
           </div>
@@ -141,9 +119,7 @@ const Index = () => {
           </div>
           
           <div className="program-grid">
-            {todaysPrograms.map((program, index) => (
-              <ProgramCard key={index} {...program} />
-            ))}
+            {todaysPrograms.map((program, index) => <ProgramCard key={index} {...program} />)}
           </div>
         </div>
       </section>
@@ -171,9 +147,7 @@ const Index = () => {
             
             <TabsContent value="actualites">
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {latestNews.map((news) => (
-                  <NewsCard key={news.id} {...news} />
-                ))}
+                {latestNews.map(news => <NewsCard key={news.id} {...news} />)}
               </div>
               <div className="text-center mt-8 sm:hidden">
                 <Button variant="outline" asChild>
@@ -187,14 +161,9 @@ const Index = () => {
             
             <TabsContent value="replay">
               <div className="space-y-4">
-                {[1, 2, 3].map((id) => (
-                  <div key={id} className="replay-item">
+                {[1, 2, 3].map(id => <div key={id} className="replay-item">
                     <div className="w-full sm:w-1/3 aspect-video bg-muted rounded-md overflow-hidden">
-                      <img 
-                        src={`https://images.unsplash.com/photo-148705${id}459604-3b5ec3a7fe05?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=800&q=80`}
-                        alt={`Replay ${id}`}
-                        className="w-full h-full object-cover"
-                      />
+                      <img src={`https://images.unsplash.com/photo-148705${id}459604-3b5ec3a7fe05?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=800&q=80`} alt={`Replay ${id}`} className="w-full h-full object-cover" />
                     </div>
                     <div className="flex-1 mt-2 sm:mt-0">
                       <span className="text-xs text-muted-foreground">03 Mai 2025</span>
@@ -214,8 +183,7 @@ const Index = () => {
                         </Link>
                       </div>
                     </div>
-                  </div>
-                ))}
+                  </div>)}
               </div>
               <div className="text-center mt-8 sm:hidden">
                 <Button variant="outline" asChild>
@@ -231,14 +199,7 @@ const Index = () => {
       </section>
 
       {/* Floating Radio Player */}
-      <FloatingPlayer 
-        isVisible={isRadioPlayerVisible} 
-        onClose={() => setIsRadioPlayerVisible(false)} 
-        audioUrl="https://example.com/radio-stream"
-        title="MISHAPI VOICE Radio" 
-      />
-    </div>
-  );
+      <FloatingPlayer isVisible={isRadioPlayerVisible} onClose={() => setIsRadioPlayerVisible(false)} audioUrl="https://example.com/radio-stream" title="MISHAPI VOICE Radio" />
+    </div>;
 };
-
 export default Index;
