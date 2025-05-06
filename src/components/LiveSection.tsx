@@ -9,7 +9,7 @@ export default function LiveSection() {
       <div className="container-custom">
         <h2 className="section-title">Nos diffusions en direct</h2>
         
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mt-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mt-6">
           {/* TV Live */}
           <div className="bg-card rounded-lg p-6 shadow-sm">
             <div className="flex flex-col items-center text-center">
@@ -44,6 +44,26 @@ export default function LiveSection() {
               <Button className="btn-radio" asChild>
                 <Link to="/radio">
                   Écouter la radio en direct
+                  <ArrowRight size={16} className="ml-2" />
+                </Link>
+              </Button>
+            </div>
+          </div>
+          
+          {/* Mishapi 24 Radio Live */}
+          <div className="bg-card rounded-lg p-6 shadow-sm">
+            <div className="flex flex-col items-center text-center">
+              <div className="w-20 h-20 rounded-full bg-accent/20 flex items-center justify-center mb-4">
+                <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-accent"><path d="M4.9 19.1C1 15.2 1 8.8 4.9 4.9"/><path d="M7.8 16.2c-2.3-2.3-2.3-6.1 0-8.5"/><circle cx="12" cy="12" r="2"/><path d="M16.2 7.8c2.3 2.3 2.3 6.1 0 8.5"/><path d="M19.1 4.9C23 8.8 23 15.1 19.1 19"/></svg>
+              </div>
+              <h3 className="text-xl font-bold mb-2">MISHAPI 24 EN DIRECT</h3>
+              <p className="text-muted-foreground mb-6">
+                Découvrez notre station radio basée à Kinshasa. Actualités, culture et 
+                divertissement au cœur de la capitale congolaise, 24h/24.
+              </p>
+              <Button className="btn-radio bg-accent text-accent-foreground hover:bg-accent/90" asChild>
+                <Link to="/mishapi24">
+                  Écouter Mishapi 24
                   <ArrowRight size={16} className="ml-2" />
                 </Link>
               </Button>
