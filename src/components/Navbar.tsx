@@ -1,3 +1,4 @@
+
 import { useState, useEffect, useRef } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { Menu, X, Moon, Sun, ChevronRight, ChevronLeft, Tv, Radio } from 'lucide-react';
@@ -66,19 +67,16 @@ export default function Navbar() {
     name: "Accueil",
     path: "/"
   }, {
-    name: "",
+    name: "TV en direct",
     path: "/tv",
     icon: <Tv className="h-5 w-5" />
   }, {
-    name: "",
+    name: "Radio en direct",
     path: "/radio",
     icon: <Radio className="h-5 w-5" />
   }, {
     name: "Catégories",
     path: "/actualites"
-  }, {
-    name: "À propos",
-    path: "/a-propos"
   }, {
     name: "Contact",
     path: "/contact"
@@ -156,7 +154,8 @@ export default function Navbar() {
         <div className={`md:hidden ${isMenuOpen ? "max-h-screen opacity-100" : "max-h-0 opacity-0"} overflow-hidden transition-all duration-300 ease-in-out`}>
           <div className="flex flex-col py-4 space-y-2">
             {navLinks.map(link => <Link key={link.path} to={link.path} className={`px-3 py-2.5 flex items-center ${location.pathname === link.path ? "bg-muted font-medium text-primary" : "text-foreground/80"} rounded-md`} onClick={() => setIsMenuOpen(false)}>
-                {link.icon || link.name}
+                {link.icon && <span className="mr-2">{link.icon}</span>}
+                <span>{link.name}</span>
               </Link>)}
           </div>
         </div>
