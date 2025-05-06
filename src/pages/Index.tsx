@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 import { ArrowRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { LiveSection } from '@/components/LiveSection';
+import LiveSection from '@/components/LiveSection';
 import { NewsSlider } from '@/components/NewsSlider';
 import { WordPressNewsCard } from '@/components/WordPressNewsCard';
 import { YouTubeSection } from '@/components/YouTubeSection';
