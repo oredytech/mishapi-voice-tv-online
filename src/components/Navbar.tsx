@@ -1,3 +1,4 @@
+
 import { useState, useEffect, useRef } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { Menu, X, Moon, Sun, ChevronRight, ChevronLeft, Tv, Radio } from 'lucide-react';
@@ -68,16 +69,14 @@ export default function Navbar() {
   }, {
     name: "TV en direct",
     path: "/tv",
-    icon: <Tv className="h-5 w-5 mr-2" />,
-    displayName: "TV EN DIRECT"
+    icon: <Tv className="h-5 w-5" />
   }, {
     name: "Radio en direct",
     path: "/radio",
-    icon: <Radio className="h-5 w-5 mr-2" />,
-    displayName: "RADIO EN DIRECT"
+    icon: <Radio className="h-5 w-5" />
   }, {
-    name: "À propos",
-    path: "/apropos"
+    name: "Catégories",
+    path: "/actualites"
   }, {
     name: "Contact",
     path: "/contact"
@@ -113,15 +112,7 @@ export default function Navbar() {
           {/* Desktop Menu */}
           <div className="hidden md:flex md:items-center md:space-x-2">
             {navLinks.map(link => <Link key={link.path} to={link.path} className={`nav-link flex items-center ${location.pathname === link.path ? "active" : ""}`}>
-                {link.icon && <span className="mr-1">{link.icon}</span>}
-                {link.icon ? (
-                  <>
-                    <span className="hidden lg:inline">{link.displayName || link.name}</span>
-                    <span className="lg:hidden">{link.name}</span>
-                  </>
-                ) : (
-                  link.name
-                )}
+                {link.icon || link.name}
               </Link>)}
             
             {/* Category Menu Trigger for Desktop */}
@@ -129,7 +120,7 @@ export default function Navbar() {
               <DropdownMenuTrigger asChild>
                 <Button variant="outline" className="ml-2">
                   <Menu className="h-5 w-5 mr-2" />
-                  À propos
+                  Catégories
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end" className="w-56">
@@ -191,7 +182,7 @@ export default function Navbar() {
         {/* Desktop Sidebar Category Menu */}
         {!isMobile && isCategoryMenuOpen && <div className="fixed inset-y-0 left-0 w-2/5 bg-background/95 backdrop-blur-md shadow-lg z-50 p-6 overflow-auto transform transition-transform duration-300 ease-in-out">
             <div className="flex justify-between items-center mb-6">
-              <h2 className="text-xl font-bold">À propos</h2>
+              <h2 className="text-xl font-bold">Catégories</h2>
               <Button variant="ghost" size="icon" onClick={toggleCategoryMenu}>
                 <X className="h-5 w-5" />
               </Button>
