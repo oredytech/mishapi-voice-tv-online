@@ -9,6 +9,7 @@ import { ProgramCard } from '@/components/ProgramCard';
 import { NewsCard } from '@/components/NewsCard';
 import LiveSection from '@/components/LiveSection';
 import FloatingPlayer from '@/components/FloatingPlayer';
+
 const todaysPrograms = [{
   title: "Journal Matinal",
   time: "06:00 - 07:00",
@@ -56,48 +57,53 @@ const latestNews = [{
   date: "02 Mai 2025",
   author: "Patrick Muyaya"
 }];
+
 const Index = () => {
   const [isRadioPlayerVisible, setIsRadioPlayerVisible] = useState(false);
+  const [isMishapi24PlayerVisible, setIsMishapi24PlayerVisible] = useState(false);
+
   return <div className="min-h-screen">
       {/* Hero Section */}
-      <section className="pt-6 pb-12">
-        <div className="container-custom">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
-            <div className="lg:col-span-5 flex flex-col">
-              <h1 className="font-bold leading-tight mb-4 text-4xl text-center md:text-3xl">
-                MISHAPI VOICE TV
-                <span className="text-primary block mt-1 text-center text-base">La vision Africaine dans le Monde</span>
-              </h1>
-              <p className="text-muted-foreground mb-8 text-center text-lg">
-                Chaîne de référence dans l'Est de la RDC, diffusant des émissions axées sur le développement 
-                de la République Démocratique du Congo et de toute l'Afrique.
-              </p>
-              <div className="flex flex-col sm:flex-row gap-4 px-0">
-                <Button className="btn-tv" asChild>
-                  <Link to="/tv">
-                    Regarder la TV en direct
-                    <ArrowRight size={16} className="ml-2" />
-                  </Link>
-                </Button>
-                <Button className="btn-radio" onClick={() => setIsRadioPlayerVisible(true)}>
-                  Écouter la radio en direct
+      <section 
+        className="pt-12 pb-16 bg-cover bg-center relative"
+        style={{ backgroundImage: 'url("/lovable-uploads/0ee99787-f0d1-4243-ae03-35c677a85f06.png")' }}
+      >
+        {/* Dark overlay to ensure text readability over the background image */}
+        <div className="absolute inset-0 bg-black/60"></div>
+        
+        <div className="container-custom relative z-10">
+          <div className="flex flex-col items-center text-center max-w-3xl mx-auto">
+            <h1 className="font-bold leading-tight mb-4 text-4xl md:text-5xl text-white">
+              MISHAPI VOICE TV
+              <span className="text-primary block mt-2 text-base md:text-lg">La vision Africaine dans le Monde</span>
+            </h1>
+            <p className="text-white/85 mb-8 text-lg max-w-2xl mx-auto">
+              Chaîne de référence dans l'Est de la RDC, diffusant des émissions axées sur le développement 
+              de la République Démocratique du Congo et de toute l'Afrique.
+            </p>
+            <div className="flex flex-col sm:flex-row gap-4 mb-8">
+              <Button className="btn-tv" asChild>
+                <Link to="/tv">
+                  Regarder la TV en direct
                   <ArrowRight size={16} className="ml-2" />
-                </Button>
-              </div>
-              <div className="mt-6">
-                <p className="text-sm font-medium mb-2">Également disponible sur:</p>
-                <div className="flex items-center">
-                  <div className="flex items-center justify-center px-3 py-1 border rounded-md">
-                    <img alt="Canal+" className="h-5 mr-2" src="/lovable-uploads/4cb2b446-5308-4cf3-a5d6-71657789fd7d.jpg" />
-                    <span className="text-sm">Canal 363</span>
-                  </div>
-                </div>
-              </div>
+                </Link>
+              </Button>
+              <Button className="btn-radio" onClick={() => setIsRadioPlayerVisible(true)}>
+                Écouter la radio en direct
+                <ArrowRight size={16} className="ml-2" />
+              </Button>
+              <Button variant="secondary" onClick={() => setIsMishapi24PlayerVisible(true)}>
+                Écouter Mishapi 24
+                <ArrowRight size={16} className="ml-2" />
+              </Button>
             </div>
-            
-            <div className="lg:col-span-7">
-              <div className="rounded-lg overflow-hidden">
-                <VideoPlayer videoUrl="https://example.com/tv-stream" title="MISHAPI VOICE TV - Direct" poster="https://images.unsplash.com/photo-1605810230434-7631ac76ec81?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=800&q=80" />
+            <div className="mt-4">
+              <p className="text-sm font-medium mb-2 text-white/90">Également disponible sur:</p>
+              <div className="flex items-center justify-center">
+                <div className="flex items-center justify-center px-3 py-1 border border-white/20 bg-black/50 backdrop-blur-sm rounded-md">
+                  <img alt="Canal+" className="h-5 mr-2" src="/lovable-uploads/4cb2b446-5308-4cf3-a5d6-71657789fd7d.jpg" />
+                  <span className="text-sm text-white">Canal 363</span>
+                </div>
               </div>
             </div>
           </div>
@@ -198,8 +204,21 @@ const Index = () => {
         </div>
       </section>
 
-      {/* Floating Radio Player */}
-      <FloatingPlayer isVisible={isRadioPlayerVisible} onClose={() => setIsRadioPlayerVisible(false)} audioUrl="https://example.com/radio-stream" title="MISHAPI VOICE Radio" />
+      {/* Floating Radio Players */}
+      <FloatingPlayer 
+        isVisible={isRadioPlayerVisible} 
+        onClose={() => setIsRadioPlayerVisible(false)} 
+        audioUrl="https://example.com/radio-stream" 
+        title="MISHAPI VOICE Radio" 
+      />
+      
+      <FloatingPlayer 
+        isVisible={isMishapi24PlayerVisible} 
+        onClose={() => setIsMishapi24PlayerVisible(false)} 
+        audioUrl="https://example.com/mishapi24-stream" 
+        title="MISHAPI 24" 
+      />
     </div>;
 };
+
 export default Index;
