@@ -1,66 +1,54 @@
-import { useState } from 'react';
+
+import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { VideoPlayer } from '@/components/VideoPlayer';
-import { AudioPlayer } from '@/components/AudioPlayer';
-import { ProgramCard } from '@/components/ProgramCard';
-import { NewsCard } from '@/components/NewsCard';
-import LiveSection from '@/components/LiveSection';
+import { LiveSection } from '@/components/LiveSection';
+import { NewsSlider } from '@/components/NewsSlider';
+import { WordPressNewsCard } from '@/components/WordPressNewsCard';
+import { YouTubeSection } from '@/components/YouTubeSection';
+import { ContactSection } from '@/components/ContactSection';
+import { fetchWordPressPosts, WordPressPost } from '@/services/wordpress';
 import FloatingPlayer from '@/components/FloatingPlayer';
-
-const todaysPrograms = [{
-  title: "Journal Matinal",
-  time: "06:00 - 07:00",
-  description: "Le point sur l'actualité nationale et internationale avec notre équipe de journalistes.",
-  host: "Jean Kabongo",
-  category: "Actualités",
-  isLive: false
-}, {
-  title: "Débat Éco",
-  time: "12:30 - 13:30",
-  description: "Analyse des enjeux économiques actuels en RDC et en Afrique.",
-  host: "Marie Lusamba",
-  category: "Économie",
-  isLive: true
-}, {
-  title: "Culture Express",
-  time: "15:00 - 16:00",
-  description: "Toute l'actualité culturelle et artistique de la région.",
-  host: "Patrick Muyaya",
-  category: "Culture",
-  isLive: false
-}];
-const latestNews = [{
-  id: "1",
-  title: "La RDC lance un nouveau programme d'électrification rurale",
-  excerpt: "Le gouvernement vient d'annoncer un ambitieux plan d'électrification qui touchera plus de 200 villages dans l'est du pays.",
-  image: "https://images.unsplash.com/photo-1605810230434-7631ac76ec81?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=800&q=80",
-  category: "Développement",
-  date: "Aujourd'hui à 10:45",
-  author: "Jean Kabongo"
-}, {
-  id: "2",
-  title: "Festival de musique à Goma : les artistes locaux à l'honneur",
-  excerpt: "La 5ème édition du festival Amani a réuni plus de 30 artistes congolais et internationaux pour célébrer la paix et la culture.",
-  image: "https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=800&q=80",
-  category: "Culture",
-  date: "Hier à 18:20",
-  author: "Marie Lusamba"
-}, {
-  id: "3",
-  title: "Nouveau partenariat pour l'exploitation minière responsable",
-  excerpt: "Un accord majeur a été signé entre la RDC et plusieurs entreprises internationales pour garantir des pratiques minières plus éthiques.",
-  image: "https://images.unsplash.com/photo-1466442929976-97f336a657be?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=800&q=80",
-  category: "Économie",
-  date: "02 Mai 2025",
-  author: "Patrick Muyaya"
-}];
+import {
+  Pagination,
+  PaginationContent,
+  PaginationEllipsis,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+} from '@/components/ui/pagination';
 
 const Index = () => {
   const [isRadioPlayerVisible, setIsRadioPlayerVisible] = useState(false);
   const [isMishapi24PlayerVisible, setIsMishapi24PlayerVisible] = useState(false);
+  const [posts, setPosts] = useState<WordPressPost[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const loadPosts = async () => {
+      setIsLoading(true);
+      try {
+        const fetchedPosts = await fetchWordPressPosts(1, 15);
+        setPosts(fetchedPosts);
+      } catch (err) {
+        setError('Erreur lors du chargement des actualités');
+        console.error(err);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    loadPosts();
+  }, []);
+
+  // Split posts for different sections
+  const sliderPosts = posts.slice(0, 5);
+  const topPosts = posts.slice(5, 9);
+  const morePosts = posts.slice(9, 15);
 
   return <div className="min-h-screen">
       {/* Hero Section */}
@@ -113,96 +101,102 @@ const Index = () => {
       {/* Live Section */}
       <LiveSection />
 
-      {/* Programs du jour */}
-      <section className="py-12">
-        <div className="container-custom">
-          <div className="flex justify-between items-center mb-6">
-            <h2 className="section-title">Programmes du jour</h2>
-            <Link to="/programmes" className="text-primary hover:underline flex items-center">
-              Voir la grille complète
-              <ArrowRight size={16} className="ml-1" />
-            </Link>
-          </div>
-          
-          <div className="program-grid">
-            {todaysPrograms.map((program, index) => <ProgramCard key={index} {...program} />)}
-          </div>
-        </div>
-      </section>
-
-      {/* News & Replay Section */}
+      {/* News Section */}
       <section className="py-12 bg-muted/50">
         <div className="container-custom">
           <Tabs defaultValue="actualites" className="w-full">
             <div className="flex justify-between items-center mb-6">
-              <TabsList>
-                <TabsTrigger value="actualites">Actualités</TabsTrigger>
-                <TabsTrigger value="replay">Replay</TabsTrigger>
-              </TabsList>
+              <h2 className="section-title">Actualités</h2>
               <div className="hidden sm:block">
                 <Link to="/actualites" className="text-primary hover:underline flex items-center mr-4 inline-block">
                   Toutes les actualités
                   <ArrowRight size={16} className="ml-1" />
                 </Link>
-                <Link to="/replay" className="text-primary hover:underline flex items-center inline-block">
-                  Tous les replays
-                  <ArrowRight size={16} className="ml-1" />
-                </Link>
               </div>
             </div>
             
-            <TabsContent value="actualites">
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {latestNews.map(news => <NewsCard key={news.id} {...news} />)}
+            {isLoading ? (
+              <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
+                {[...Array(3)].map((_, i) => (
+                  <div key={i} className="aspect-video bg-muted animate-pulse rounded-lg" />
+                ))}
               </div>
-              <div className="text-center mt-8 sm:hidden">
-                <Button variant="outline" asChild>
-                  <Link to="/actualites">
-                    Toutes les actualités
-                    <ArrowRight size={16} className="ml-2" />
-                  </Link>
+            ) : error ? (
+              <div className="text-center py-8">
+                <p className="text-destructive">{error}</p>
+                <Button 
+                  variant="outline" 
+                  onClick={() => window.location.reload()} 
+                  className="mt-4"
+                >
+                  Réessayer
                 </Button>
               </div>
-            </TabsContent>
+            ) : (
+              <>
+                {/* First section: Slider + Top 4 posts */}
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-10">
+                  <div className="lg:col-span-2">
+                    <NewsSlider posts={sliderPosts} />
+                  </div>
+                  <div className="space-y-4">
+                    {topPosts.map(post => (
+                      <WordPressNewsCard key={post.id} post={post} variant="small" />
+                    ))}
+                  </div>
+                </div>
+                
+                {/* Second section: 6 more posts */}
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                  {morePosts.map(post => (
+                    <WordPressNewsCard key={post.id} post={post} />
+                  ))}
+                </div>
+              </>
+            )}
             
-            <TabsContent value="replay">
-              <div className="space-y-4">
-                {[1, 2, 3].map(id => <div key={id} className="replay-item">
-                    <div className="w-full sm:w-1/3 aspect-video bg-muted rounded-md overflow-hidden">
-                      <img src={`https://images.unsplash.com/photo-148705${id}459604-3b5ec3a7fe05?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=800&q=80`} alt={`Replay ${id}`} className="w-full h-full object-cover" />
-                    </div>
-                    <div className="flex-1 mt-2 sm:mt-0">
-                      <span className="text-xs text-muted-foreground">03 Mai 2025</span>
-                      <h3 className="text-lg font-semibold mt-1">
-                        <Link to={`/replay/${id}`} className="hover:text-primary">
-                          Débat: L'avenir de l'éducation en RDC {id}
-                        </Link>
-                      </h3>
-                      <p className="text-sm text-muted-foreground mt-2 line-clamp-2">
-                        Nos experts analysent les défis et opportunités du système éducatif congolais et proposent des solutions innovantes.
-                      </p>
-                      <div className="mt-3 flex items-center justify-between">
-                        <span className="text-sm">Animé par Jean Kabongo</span>
-                        <Link to={`/replay/${id}`} className="text-primary text-sm hover:underline flex items-center">
-                          Regarder
-                          <ArrowRight size={14} className="ml-1" />
-                        </Link>
-                      </div>
-                    </div>
-                  </div>)}
-              </div>
-              <div className="text-center mt-8 sm:hidden">
-                <Button variant="outline" asChild>
-                  <Link to="/replay">
-                    Tous les replays
-                    <ArrowRight size={16} className="ml-2" />
-                  </Link>
-                </Button>
-              </div>
-            </TabsContent>
+            <div className="mt-8">
+              <Pagination>
+                <PaginationContent>
+                  <PaginationItem>
+                    <PaginationPrevious href="#" />
+                  </PaginationItem>
+                  <PaginationItem>
+                    <PaginationLink href="#" isActive>1</PaginationLink>
+                  </PaginationItem>
+                  <PaginationItem>
+                    <PaginationLink href="#">2</PaginationLink>
+                  </PaginationItem>
+                  <PaginationItem>
+                    <PaginationLink href="#">3</PaginationLink>
+                  </PaginationItem>
+                  <PaginationItem>
+                    <PaginationEllipsis />
+                  </PaginationItem>
+                  <PaginationItem>
+                    <PaginationNext href="#" />
+                  </PaginationItem>
+                </PaginationContent>
+              </Pagination>
+            </div>
+            
+            <div className="text-center mt-6 sm:hidden">
+              <Button variant="outline" asChild>
+                <Link to="/actualites">
+                  Toutes les actualités
+                  <ArrowRight size={16} className="ml-2" />
+                </Link>
+              </Button>
+            </div>
           </Tabs>
         </div>
       </section>
+      
+      {/* YouTube Videos Section */}
+      <YouTubeSection />
+      
+      {/* Contact Section */}
+      <ContactSection />
 
       {/* Floating Radio Players */}
       <FloatingPlayer 
