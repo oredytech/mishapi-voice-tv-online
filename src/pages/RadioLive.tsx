@@ -1,11 +1,27 @@
-
 import { useState } from "react";
+import { useLocation } from "react-router-dom";
 import { AudioPlayer } from "@/components/AudioPlayer";
 import { ProgramCard } from "@/components/ProgramCard";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import FloatingPlayer from "@/components/FloatingPlayer";
 
+interface RadioLocationState {
+  radioStream: string;
+  radioTitle: string;
+}
+
+const DEFAULT_RADIO = {
+  stream: "https://stream.zeno.fm/cgxrxyyhjsrtv",
+  title: "MISHAPI VOICE Radio"
+};
+
 const RadioLive = () => {
+  const location = useLocation();
+  const state = location.state as RadioLocationState | null;
+  
+  const radioStream = state?.radioStream || DEFAULT_RADIO.stream;
+  const radioTitle = state?.radioTitle || DEFAULT_RADIO.title;
+  
   const [activeDay, setActiveDay] = useState("aujourd'hui");
   const [showFloatingPlayer, setShowFloatingPlayer] = useState(false);
 
@@ -104,14 +120,14 @@ const RadioLive = () => {
                 <div className="w-24 h-24 rounded-full bg-primary/20 flex items-center justify-center mb-4">
                   <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-primary"><path d="M4.9 19.1C1 15.2 1 8.8 4.9 4.9"/><path d="M7.8 16.2c-2.3-2.3-2.3-6.1 0-8.5"/><circle cx="12" cy="12" r="2"/><path d="M16.2 7.8c2.3 2.3 2.3 6.1 0 8.5"/><path d="M19.1 4.9C23 8.8 23 15.1 19.1 19"/></svg>
                 </div>
-                <h2 className="text-2xl font-bold mb-2">MISHAPI VOICE Radio</h2>
+                <h2 className="text-2xl font-bold mb-2">{radioTitle}</h2>
                 <p className="text-muted-foreground mb-6">
                   Écoutez notre radio en direct pour rester informé où que vous soyez.
                   Des programmes variés et de la musique africaine pour vous accompagner.
                 </p>
                 
                 <div className="w-full max-w-md mb-6">
-                  <AudioPlayer audioUrl="https://example.com/radio-stream" title="MISHAPI VOICE Radio" />
+                  <AudioPlayer audioUrl={radioStream} title={radioTitle} />
                 </div>
                 
                 <button 
@@ -214,8 +230,8 @@ const RadioLive = () => {
       <FloatingPlayer 
         isVisible={showFloatingPlayer} 
         onClose={() => setShowFloatingPlayer(false)}
-        audioUrl="https://example.com/radio-stream"
-        title="MISHAPI VOICE Radio" 
+        audioUrl={radioStream}
+        title={radioTitle} 
       />
     </div>
   );

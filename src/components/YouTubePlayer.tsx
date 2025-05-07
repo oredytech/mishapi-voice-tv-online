@@ -1,6 +1,7 @@
 
 import { useState, useRef, useEffect } from "react";
-import { Dialog, DialogContent } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
+import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
 
 interface YouTubePlayerProps {
   videoId: string;
@@ -29,6 +30,9 @@ export function YouTubePlayer({ videoId, title, isOpen, onClose }: YouTubePlayer
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="max-w-3xl p-0 overflow-hidden bg-black">
+        <DialogTitle>
+          <VisuallyHidden>{title}</VisuallyHidden>
+        </DialogTitle>
         <div className="aspect-video w-full">
           <iframe
             ref={iframeRef}

@@ -1,14 +1,27 @@
 
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { Volume, Volume1, Volume2, VolumeX, Play, Pause } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
-export function AudioPlayer({ audioUrl = "https://example.com/radio-stream", title = "MISHAPI VOICE Radio" }) {
+export function AudioPlayer({ audioUrl, title }) {
   const [isPlaying, setIsPlaying] = useState(false);
   const [volume, setVolume] = useState(0.7);
   const [isMuted, setIsMuted] = useState(false);
   const audioRef = useRef<HTMLAudioElement>(null);
   const previousVolumeRef = useRef(volume);
+
+  useEffect(() => {
+    // Mettre à jour l'URL de l'audio si elle change
+    if (audioRef.current) {
+      audioRef.current.src = audioUrl;
+      if (isPlaying) {
+        audioRef.current.play().catch(error => {
+          console.error("Erreur de lecture audio:", error);
+          setIsPlaying(false);
+        });
+      }
+    }
+  }, [audioUrl]);
 
   const togglePlay = () => {
     if (audioRef.current) {

@@ -3,6 +3,12 @@ import { ArrowRight } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 
+// Définition des liens de streaming pour les radios
+const RADIO_STREAMS = {
+  mishapiVoice: "https://stream.zeno.fm/cgxrxyyhjsrtv",
+  mishapi24: "https://stream.zeno.fm/t7anwdwtbluuv"
+};
+
 export default function LiveSection() {
   return (
     <section className="py-12 bg-gradient-to-br from-primary/10 to-secondary/10">
@@ -42,7 +48,7 @@ export default function LiveSection() {
                 Des programmes variés et de la musique africaine pour vous accompagner.
               </p>
               <Button className="btn-radio" asChild>
-                <Link to="/radio">
+                <Link to="/radio" state={{ radioStream: RADIO_STREAMS.mishapiVoice, radioTitle: "MISHAPI VOICE Radio" }}>
                   Écouter la radio en direct
                   <ArrowRight size={16} className="ml-2" />
                 </Link>
@@ -62,7 +68,7 @@ export default function LiveSection() {
                 divertissement au cœur de la capitale congolaise, 24h/24.
               </p>
               <Button className="btn-radio bg-accent text-accent-foreground hover:bg-accent/90" asChild>
-                <Link to="/mishapi24">
+                <Link to="/mishapi24" state={{ radioStream: RADIO_STREAMS.mishapi24, radioTitle: "MISHAPI 24" }}>
                   Écouter Mishapi 24
                   <ArrowRight size={16} className="ml-2" />
                 </Link>
