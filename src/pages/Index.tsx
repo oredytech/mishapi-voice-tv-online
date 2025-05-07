@@ -9,7 +9,7 @@ import { NewsSlider } from '@/components/NewsSlider';
 import { WordPressNewsCard } from '@/components/WordPressNewsCard';
 import { YouTubeSection } from '@/components/YouTubeSection';
 import { ContactSection } from '@/components/ContactSection';
-import { fetchWordPressPosts, WordPressPost } from '@/services/wordpress';
+import { fetchWordPressPostsWithPagination, fetchWordPressPosts, WordPressPost } from '@/services/wordpress';
 import FloatingPlayer from '@/components/FloatingPlayer';
 import {
   Pagination,
@@ -20,35 +20,140 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from '@/components/ui/pagination';
+import { useToast } from '@/components/ui/use-toast';
 
 const Index = () => {
   const [isRadioPlayerVisible, setIsRadioPlayerVisible] = useState(false);
   const [isMishapi24PlayerVisible, setIsMishapi24PlayerVisible] = useState(false);
-  const [posts, setPosts] = useState<WordPressPost[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
+  const [sliderPosts, setSliderPosts] = useState<WordPressPost[]>([]);
+  const [topPosts, setTopPosts] = useState<WordPressPost[]>([]);
+  const [morePosts, setMorePosts] = useState<WordPressPost[]>([]);
+  const [isLoadingSlider, setIsLoadingSlider] = useState(true);
+  const [isLoadingTop, setIsLoadingTop] = useState(true);
+  const [isLoadingMore, setIsLoadingMore] = useState(true);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
   const [error, setError] = useState<string | null>(null);
+  const { toast } = useToast();
 
+  // Chargement des articles du slider (5 plus récents)
   useEffect(() => {
-    const loadPosts = async () => {
-      setIsLoading(true);
+    const loadSliderPosts = async () => {
+      setIsLoadingSlider(true);
       try {
-        const fetchedPosts = await fetchWordPressPosts(1, 15);
-        setPosts(fetchedPosts);
+        const fetchedPosts = await fetchWordPressPosts(1, 5);
+        setSliderPosts(fetchedPosts);
       } catch (err) {
-        setError('Erreur lors du chargement des actualités');
+        setError('Erreur lors du chargement des actualités principales');
+        toast({
+          variant: "destructive",
+          title: "Erreur",
+          description: "Impossible de charger les actualités principales"
+        });
         console.error(err);
       } finally {
-        setIsLoading(false);
+        setIsLoadingSlider(false);
       }
     };
 
-    loadPosts();
+    loadSliderPosts();
   }, []);
 
-  // Split posts for different sections
-  const sliderPosts = posts.slice(0, 5);
-  const topPosts = posts.slice(5, 9);
-  const morePosts = posts.slice(9, 15);
+  // Chargement des articles de droite (4 articles)
+  useEffect(() => {
+    const loadTopPosts = async () => {
+      setIsLoadingTop(true);
+      try {
+        const fetchedPosts = await fetchWordPressPosts(1, 4);
+        setTopPosts(fetchedPosts);
+      } catch (err) {
+        setError('Erreur lors du chargement des actualités secondaires');
+        toast({
+          variant: "destructive",
+          title: "Erreur",
+          description: "Impossible de charger les actualités secondaires"
+        });
+        console.error(err);
+      } finally {
+        setIsLoadingTop(false);
+      }
+    };
+
+    loadTopPosts();
+  }, []);
+
+  // Chargement des articles de la grille avec pagination
+  useEffect(() => {
+    const loadMorePosts = async () => {
+      setIsLoadingMore(true);
+      try {
+        const response = await fetchWordPressPostsWithPagination(currentPage, 6);
+        setMorePosts(response.posts);
+        setTotalPages(response.totalPages);
+      } catch (err) {
+        setError('Erreur lors du chargement des actualités');
+        toast({
+          variant: "destructive",
+          title: "Erreur",
+          description: "Impossible de charger les actualités"
+        });
+        console.error(err);
+      } finally {
+        setIsLoadingMore(false);
+      }
+    };
+
+    loadMorePosts();
+  }, [currentPage]);
+
+  // Gestion du changement de page
+  const handlePageChange = (page: number) => {
+    if (page >= 1 && page <= totalPages) {
+      setCurrentPage(page);
+      window.scrollTo({ top: document.getElementById('news-grid')?.offsetTop || 0, behavior: 'smooth' });
+    }
+  };
+
+  // Génération des numéros de page pour la pagination
+  const getPageNumbers = () => {
+    const pageNumbers = [];
+    const maxPagesToShow = 5;
+    
+    if (totalPages <= maxPagesToShow) {
+      // Si le nombre total de pages est inférieur ou égal au nombre maximum de pages à afficher
+      for (let i = 1; i <= totalPages; i++) {
+        pageNumbers.push(i);
+      }
+    } else {
+      // Si le nombre total de pages est supérieur au nombre maximum de pages à afficher
+      if (currentPage <= 3) {
+        // Si la page actuelle est proche du début
+        for (let i = 1; i <= 4; i++) {
+          pageNumbers.push(i);
+        }
+        pageNumbers.push('ellipsis');
+        pageNumbers.push(totalPages);
+      } else if (currentPage >= totalPages - 2) {
+        // Si la page actuelle est proche de la fin
+        pageNumbers.push(1);
+        pageNumbers.push('ellipsis');
+        for (let i = totalPages - 3; i <= totalPages; i++) {
+          pageNumbers.push(i);
+        }
+      } else {
+        // Si la page actuelle est au milieu
+        pageNumbers.push(1);
+        pageNumbers.push('ellipsis');
+        for (let i = currentPage - 1; i <= currentPage + 1; i++) {
+          pageNumbers.push(i);
+        }
+        pageNumbers.push('ellipsis');
+        pageNumbers.push(totalPages);
+      }
+    }
+    
+    return pageNumbers;
+  };
 
   return <div className="min-h-screen">
       {/* Hero Section */}
@@ -115,66 +220,139 @@ const Index = () => {
               </div>
             </div>
             
-            {isLoading ? (
-              <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
-                {[...Array(3)].map((_, i) => (
-                  <div key={i} className="aspect-video bg-muted animate-pulse rounded-lg" />
-                ))}
-              </div>
-            ) : error ? (
-              <div className="text-center py-8">
-                <p className="text-destructive">{error}</p>
-                <Button 
-                  variant="outline" 
-                  onClick={() => window.location.reload()} 
-                  className="mt-4"
-                >
-                  Réessayer
-                </Button>
-              </div>
-            ) : (
-              <>
-                {/* First section: Slider + Top 4 posts */}
-                <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-10">
-                  <div className="lg:col-span-2">
-                    <NewsSlider posts={sliderPosts} />
+            {/* Première section: Slider + Top 4 posts */}
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-10">
+              {/* Slider */}
+              <div className="lg:col-span-2">
+                {isLoadingSlider ? (
+                  <div className="aspect-[16/9] w-full bg-muted/20 animate-pulse rounded-lg flex items-center justify-center">
+                    <p className="text-muted-foreground">Chargement des actualités...</p>
                   </div>
-                  <div className="space-y-4">
-                    {topPosts.map(post => (
-                      <WordPressNewsCard key={post.id} post={post} variant="small" />
+                ) : error ? (
+                  <div className="text-center py-8">
+                    <p className="text-destructive">{error}</p>
+                    <Button 
+                      variant="outline" 
+                      onClick={() => window.location.reload()} 
+                      className="mt-4"
+                    >
+                      Réessayer
+                    </Button>
+                  </div>
+                ) : (
+                  <NewsSlider posts={sliderPosts} />
+                )}
+              </div>
+              
+              {/* Top 4 posts */}
+              <div className="space-y-4">
+                {isLoadingTop ? (
+                  <>
+                    {[...Array(4)].map((_, i) => (
+                      <div key={i} className="flex gap-3 items-start">
+                        <div className="w-24 h-24 bg-muted animate-pulse rounded-md"></div>
+                        <div className="flex-1 space-y-2">
+                          <div className="h-4 bg-muted animate-pulse rounded w-3/4"></div>
+                          <div className="h-3 bg-muted animate-pulse rounded w-1/2"></div>
+                        </div>
+                      </div>
                     ))}
+                  </>
+                ) : error ? (
+                  <div className="text-center py-4">
+                    <p className="text-destructive text-sm">{error}</p>
+                    <Button 
+                      variant="outline" 
+                      size="sm"
+                      onClick={() => window.location.reload()} 
+                      className="mt-2"
+                    >
+                      Réessayer
+                    </Button>
                   </div>
-                </div>
-                
-                {/* Second section: 6 more posts */}
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                  {morePosts.map(post => (
-                    <WordPressNewsCard key={post.id} post={post} />
-                  ))}
-                </div>
-              </>
-            )}
+                ) : (
+                  topPosts.map(post => (
+                    <WordPressNewsCard key={post.id} post={post} variant="small" />
+                  ))
+                )}
+              </div>
+            </div>
             
+            {/* Deuxième section: 6 more posts avec pagination */}
+            <div id="news-grid" className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {isLoadingMore ? (
+                <>
+                  {[...Array(6)].map((_, i) => (
+                    <div key={i} className="aspect-video bg-muted animate-pulse rounded-lg" />
+                  ))}
+                </>
+              ) : error ? (
+                <div className="col-span-full text-center py-8">
+                  <p className="text-destructive">{error}</p>
+                  <Button 
+                    variant="outline" 
+                    onClick={() => window.location.reload()} 
+                    className="mt-4"
+                  >
+                    Réessayer
+                  </Button>
+                </div>
+              ) : morePosts.length === 0 ? (
+                <div className="col-span-full text-center py-8">
+                  <p className="text-muted-foreground">Aucun article disponible pour le moment.</p>
+                </div>
+              ) : (
+                morePosts.map(post => (
+                  <WordPressNewsCard key={post.id} post={post} />
+                ))
+              )}
+            </div>
+            
+            {/* Pagination améliorée */}
             <div className="mt-8">
               <Pagination>
                 <PaginationContent>
                   <PaginationItem>
-                    <PaginationPrevious href="#" />
+                    <PaginationPrevious 
+                      href="#" 
+                      onClick={(e) => { 
+                        e.preventDefault(); 
+                        handlePageChange(currentPage - 1);
+                      }} 
+                      className={currentPage === 1 ? "pointer-events-none opacity-50" : ""} 
+                    />
                   </PaginationItem>
+                  
+                  {getPageNumbers().map((pageNumber, index) => (
+                    pageNumber === 'ellipsis' ? (
+                      <PaginationItem key={`ellipsis-${index}`}>
+                        <PaginationEllipsis />
+                      </PaginationItem>
+                    ) : (
+                      <PaginationItem key={pageNumber}>
+                        <PaginationLink 
+                          href="#" 
+                          onClick={(e) => { 
+                            e.preventDefault(); 
+                            handlePageChange(pageNumber as number);
+                          }}
+                          isActive={pageNumber === currentPage}
+                        >
+                          {pageNumber}
+                        </PaginationLink>
+                      </PaginationItem>
+                    )
+                  ))}
+                  
                   <PaginationItem>
-                    <PaginationLink href="#" isActive>1</PaginationLink>
-                  </PaginationItem>
-                  <PaginationItem>
-                    <PaginationLink href="#">2</PaginationLink>
-                  </PaginationItem>
-                  <PaginationItem>
-                    <PaginationLink href="#">3</PaginationLink>
-                  </PaginationItem>
-                  <PaginationItem>
-                    <PaginationEllipsis />
-                  </PaginationItem>
-                  <PaginationItem>
-                    <PaginationNext href="#" />
+                    <PaginationNext 
+                      href="#" 
+                      onClick={(e) => { 
+                        e.preventDefault(); 
+                        handlePageChange(currentPage + 1);
+                      }} 
+                      className={currentPage === totalPages ? "pointer-events-none opacity-50" : ""} 
+                    />
                   </PaginationItem>
                 </PaginationContent>
               </Pagination>
