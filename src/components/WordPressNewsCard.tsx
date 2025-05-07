@@ -2,7 +2,7 @@
 import { Link } from "react-router-dom";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { WordPressPost } from "@/services/wordpress";
+import { WordPressPost, getFeaturedImageUrl } from "@/services/wordpress";
 
 interface WordPressNewsCardProps {
   post: WordPressPost;
@@ -10,7 +10,7 @@ interface WordPressNewsCardProps {
 }
 
 export function WordPressNewsCard({ post, variant = 'default' }: WordPressNewsCardProps) {
-  const imageUrl = post._embedded?.['wp:featuredmedia']?.[0]?.source_url || '/placeholder.svg';
+  const imageUrl = getFeaturedImageUrl(post);
   const category = post._embedded?.['wp:term']?.[0]?.[0]?.name || 'Actualité';
   const author = post._embedded?.author?.[0]?.name;
   const formattedDate = new Date(post.date).toLocaleDateString('fr-FR', { 

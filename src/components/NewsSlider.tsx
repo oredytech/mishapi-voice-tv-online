@@ -1,5 +1,4 @@
 
-import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { Badge } from "@/components/ui/badge";
 import { 
@@ -9,7 +8,7 @@ import {
   CarouselNext, 
   CarouselPrevious 
 } from "@/components/ui/carousel";
-import { WordPressPost } from "@/services/wordpress";
+import { WordPressPost, getFeaturedImageUrl } from "@/services/wordpress";
 
 interface NewsSliderProps {
   posts: WordPressPost[];
@@ -31,7 +30,7 @@ export function NewsSlider({ posts }: NewsSliderProps) {
           <CarouselItem key={post.id}>
             <div className="relative aspect-[16/9] w-full overflow-hidden rounded-lg">
               <img 
-                src={post._embedded?.['wp:featuredmedia']?.[0]?.source_url || '/placeholder.svg'} 
+                src={getFeaturedImageUrl(post)} 
                 alt={post.title.rendered} 
                 className="w-full h-full object-cover"
               />

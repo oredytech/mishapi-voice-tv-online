@@ -15,9 +15,24 @@ export interface WordPressPost {
   _embedded?: {
     'wp:featuredmedia'?: Array<{
       source_url: string;
+      media_details?: {
+        sizes?: {
+          medium?: {
+            source_url: string;
+          };
+          large?: {
+            source_url: string;
+          };
+          full?: {
+            source_url: string;
+          };
+        };
+      };
     }>;
     'wp:term'?: Array<Array<{
       name: string;
+      id: number;
+      slug: string;
     }>>;
     author?: Array<{
       name: string;
@@ -95,4 +110,30 @@ export const fetchWordPressCategoryPosts = async (categoryId: number, page = 1, 
     console.error(`Error fetching WordPress posts for category ${categoryId}:`, error);
     return [];
   }
+};
+
+// Fonction pour récupérer l'URL de l'image en avant d'un article
+export const getFeaturedImageUrl = (post: WordPressPost): string => {
+  // Vérifier si le post a une image mise en avant
+  if (post._embedded && post._embedded['wp:featuredmedia'] && post._embedded['wp:featuredmedia'][0]) {
+    // Essayer d'obtenir la version large de l'image
+    const mediaDetails = post._embedded['wp:featuredmedia'][0].media_details;
+    if (mediaDetails && mediaDetails.sizes) {
+      if (mediaDetails.sizes.large) {
+        return mediaDetails.sizes.large.source_url;
+      }
+      if (mediaDetails.sizes.medium) {
+        return mediaDetails.sizes.medium.source_url;
+      }
+      if (mediaDetails.sizes.full) {
+        return mediaDetails.sizes.full.source_url;
+      }
+    }
+    
+    // Revenir à l'URL source si les tailles ne sont pas disponibles
+    return post._embedded['wp:featuredmedia'][0].source_url;
+  }
+  
+  // Image par défaut si aucune image n'est trouvée
+  return 'https://images.unsplash.com/photo-1488590528505-98d2b5aba04b?auto=format&fit=crop&w=800&q=80';
 };
