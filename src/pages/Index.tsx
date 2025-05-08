@@ -1,7 +1,7 @@
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
-import { ArrowRight } from 'lucide-react';
+import { ArrowRight, ChevronRight, ChevronLeft } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import LiveSection from '@/components/LiveSection';
@@ -11,6 +11,8 @@ import { YouTubeSection } from '@/components/YouTubeSection';
 import { ContactSection } from '@/components/ContactSection';
 import { fetchWordPressPostsWithPagination, fetchWordPressPosts, WordPressPost } from '@/services/wordpress';
 import FloatingPlayer from '@/components/FloatingPlayer';
+import { categories } from '@/components/Navbar';
+import { useIsMobile } from '@/hooks/use-mobile';
 import {
   Pagination,
   PaginationContent,
@@ -35,6 +37,20 @@ const Index = () => {
   const [totalPages, setTotalPages] = useState(1);
   const [error, setError] = useState<string | null>(null);
   const { toast } = useToast();
+  const categoryScrollRef = useRef<HTMLDivElement>(null);
+  const isMobile = useIsMobile();
+
+  // Scroll function for category menu
+  const scroll = (direction: 'left' | 'right') => {
+    if (categoryScrollRef.current) {
+      const scrollAmount = 200; // Adjust scroll amount as needed
+      if (direction === 'left') {
+        categoryScrollRef.current.scrollLeft -= scrollAmount;
+      } else {
+        categoryScrollRef.current.scrollLeft += scrollAmount;
+      }
+    }
+  };
 
   // Chargement des articles du slider (5 plus récents)
   useEffect(() => {
@@ -220,6 +236,29 @@ const Index = () => {
               </div>
             </div>
             
+            {/* Mobile Categories Scrollable Menu - Now moved to the news section */}
+            {isMobile && (
+              <div className="mb-6 relative">
+                <div className="absolute left-0 top-1/2 -translate-y-1/2 z-10">
+                  <Button variant="ghost" size="icon" className="h-8 w-8 bg-background/80 backdrop-blur-sm shadow-sm" onClick={() => scroll('left')}>
+                    <ChevronLeft className="h-4 w-4" />
+                  </Button>
+                </div>
+                <div ref={categoryScrollRef} className="flex overflow-x-auto scrollbar-none py-2 space-x-2 px-8">
+                  {categories.map(category => (
+                    <Link key={category.name} to={category.path} className="whitespace-nowrap px-3 py-1.5 text-sm bg-muted rounded-full hover:bg-primary/10">
+                      {category.name}
+                    </Link>
+                  ))}
+                </div>
+                <div className="absolute right-0 top-1/2 -translate-y-1/2 z-10">
+                  <Button variant="ghost" size="icon" className="h-8 w-8 bg-background/80 backdrop-blur-sm shadow-sm" onClick={() => scroll('right')}>
+                    <ChevronRight className="h-4 w-4" />
+                  </Button>
+                </div>
+              </div>
+            )}
+            
             {/* Première section: Slider + Top 4 posts */}
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-10">
               {/* Slider */}
@@ -380,14 +419,14 @@ const Index = () => {
       <FloatingPlayer 
         isVisible={isRadioPlayerVisible} 
         onClose={() => setIsRadioPlayerVisible(false)} 
-        audioUrl="https://example.com/radio-stream" 
+        audioUrl="https://stream.zeno.fm/cgxrxyyhjsrtv" 
         title="MISHAPI VOICE Radio" 
       />
       
       <FloatingPlayer 
         isVisible={isMishapi24PlayerVisible} 
         onClose={() => setIsMishapi24PlayerVisible(false)} 
-        audioUrl="https://example.com/mishapi24-stream" 
+        audioUrl="https://stream.zeno.fm/t7anwdwtbluuv" 
         title="MISHAPI 24" 
       />
     </div>;

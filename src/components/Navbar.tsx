@@ -1,7 +1,7 @@
 
 import { useState, useEffect, useRef } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Menu, X, Moon, Sun, ChevronRight, ChevronLeft, Tv, Radio } from 'lucide-react';
+import { Menu, X, Moon, Sun, Tv, Radio } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useTheme } from '@/hooks/useTheme';
 import { useIsMobile } from '@/hooks/use-mobile';
@@ -10,7 +10,7 @@ import { Drawer, DrawerContent, DrawerTrigger } from '@/components/ui/drawer';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 
 // Define categories
-const categories = [{
+export const categories = [{
   name: "Actualités Nationales",
   path: "/actualites/nationales"
 }, {
@@ -51,7 +51,7 @@ export default function Navbar() {
     toggleTheme
   } = useTheme();
   const isMobile = useIsMobile();
-  const categoryScrollRef = useRef<HTMLDivElement>(null);
+  
   useEffect(() => {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 20);
@@ -87,16 +87,7 @@ export default function Navbar() {
   const toggleCategoryMenu = () => {
     setIsCategoryMenuOpen(!isCategoryMenuOpen);
   };
-  const scroll = (direction: 'left' | 'right') => {
-    if (categoryScrollRef.current) {
-      const scrollAmount = 200; // Adjust scroll amount as needed
-      if (direction === 'left') {
-        categoryScrollRef.current.scrollLeft -= scrollAmount;
-      } else {
-        categoryScrollRef.current.scrollLeft += scrollAmount;
-      }
-    }
-  };
+  
   return <header className={`sticky top-0 z-50 w-full transition-all duration-300 
       ${isScrolled ? "bg-background/95 backdrop-blur-md shadow-sm" : "bg-background"}`}>
       <nav className="container-custom py-4">
@@ -159,25 +150,6 @@ export default function Navbar() {
               </Link>)}
           </div>
         </div>
-        
-        {/* Mobile Categories Scrollable Menu */}
-        {isMobile && <div className="mt-4 relative">
-            <div className="absolute left-0 top-1/2 -translate-y-1/2 z-10">
-              <Button variant="ghost" size="icon" className="h-8 w-8 bg-background/80 backdrop-blur-sm shadow-sm" onClick={() => scroll('left')}>
-                <ChevronLeft className="h-4 w-4" />
-              </Button>
-            </div>
-            <div ref={categoryScrollRef} className="flex overflow-x-auto scrollbar-none py-2 space-x-2 px-8">
-              {categories.map(category => <Link key={category.name} to={category.path} className="whitespace-nowrap px-3 py-1.5 text-sm bg-muted rounded-full hover:bg-primary/10">
-                  {category.name}
-                </Link>)}
-            </div>
-            <div className="absolute right-0 top-1/2 -translate-y-1/2 z-10">
-              <Button variant="ghost" size="icon" className="h-8 w-8 bg-background/80 backdrop-blur-sm shadow-sm" onClick={() => scroll('right')}>
-                <ChevronRight className="h-4 w-4" />
-              </Button>
-            </div>
-          </div>}
         
         {/* Desktop Sidebar Category Menu */}
         {!isMobile && isCategoryMenuOpen && <div className="fixed inset-y-0 left-0 w-2/5 bg-background/95 backdrop-blur-md shadow-lg z-50 p-6 overflow-auto transform transition-transform duration-300 ease-in-out">
