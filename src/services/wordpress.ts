@@ -1,4 +1,3 @@
-
 export interface WordPressPost {
   id: number;
   date: string;
@@ -12,6 +11,7 @@ export interface WordPressPost {
     rendered: string;
   };
   link: string;
+  slug?: string;
   _embedded?: {
     'wp:featuredmedia'?: Array<{
       source_url: string;
@@ -136,4 +136,45 @@ export const getFeaturedImageUrl = (post: WordPressPost): string => {
   
   // Image par défaut si aucune image n'est trouvée
   return 'https://images.unsplash.com/photo-1488590528505-98d2b5aba04b?auto=format&fit=crop&w=800&q=80';
+};
+
+// New function to fetch a single WordPress post by ID
+export const fetchWordPressPostById = async (id: number): Promise<WordPressPost | null> => {
+  try {
+    const response = await fetch(
+      `https://mishapivoicetv.net/wp-json/wp/v2/posts/${id}?_embed=true`
+    );
+    
+    if (!response.ok) {
+      throw new Error('Network response was not ok');
+    }
+    
+    const post: WordPressPost = await response.json();
+    return post;
+  } catch (error) {
+    console.error(`Error fetching WordPress post with ID ${id}:`, error);
+    return null;
+  }
+};
+
+// New function to create a slug from post title
+export const createSlugFromTitle = (title: string): string => {
+  return title
+    .toLowerCase()
+    .replace(/[^\w\s-]/g, '') // Remove special characters
+    .replace(/\s+/g, '-') // Replace spaces with hyphens
+    .replace(/--+/g, '-') // Replace multiple hyphens with a single one
+    .trim();
+};
+
+// New function to decode HTML entities in titles
+export const decodeHtmlEntities = (html: string): string => {
+  const textArea = document.createElement('textarea');
+  textArea.innerHTML = html;
+  return textArea.value;
+};
+
+// New function to get a clean title from WordPress post
+export const getCleanTitle = (post: WordPressPost): string => {
+  return decodeHtmlEntities(post.title.rendered);
 };

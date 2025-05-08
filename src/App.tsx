@@ -8,6 +8,7 @@ import { ThemeProvider } from "@/hooks/useTheme";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import Index from "@/pages/Index";
+import ArticlePage from "@/pages/ArticlePage";
 import TvLive from "@/pages/TvLive";
 import RadioLive from "@/pages/RadioLive";
 import NotFound from "@/pages/NotFound";
@@ -31,7 +32,7 @@ const App = () => (
                 <Route path="/mishapi24" element={<RadioLive />} />
                 <Route path="/videos" element={<NotFound />} />
                 <Route path="/actualites" element={<NotFound />} />
-                <Route path="/actualites/:id" element={<NotFound />} />
+                <Route path="/actualites/:slug" element={<ArticlePage />} />
                 {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
                 <Route path="*" element={<NotFound />} />
               </Routes>

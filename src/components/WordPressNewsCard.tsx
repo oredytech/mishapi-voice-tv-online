@@ -2,7 +2,7 @@
 import { Link } from "react-router-dom";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { WordPressPost, getFeaturedImageUrl } from "@/services/wordpress";
+import { WordPressPost, getFeaturedImageUrl, getCleanTitle, createSlugFromTitle } from "@/services/wordpress";
 
 interface WordPressNewsCardProps {
   post: WordPressPost;
@@ -19,9 +19,13 @@ export function WordPressNewsCard({ post, variant = 'default' }: WordPressNewsCa
     day: 'numeric' 
   });
 
+  const cleanTitle = getCleanTitle(post);
+  const slug = post.slug || createSlugFromTitle(cleanTitle);
+  const articleUrl = `/actualites/${slug}-${post.id}`;
+
   if (variant === 'small') {
     return (
-      <Link to={`/actualites/${post.id}`} className="group flex gap-3 items-start">
+      <Link to={articleUrl} className="group flex gap-3 items-start">
         <div className="w-24 h-24 shrink-0 rounded-md overflow-hidden">
           <img src={imageUrl} alt="" className="w-full h-full object-cover" />
         </div>
@@ -40,7 +44,7 @@ export function WordPressNewsCard({ post, variant = 'default' }: WordPressNewsCa
   }
 
   return (
-    <Link to={`/actualites/${post.id}`} className="group">
+    <Link to={articleUrl} className="group">
       <Card className="h-full overflow-hidden transition-all hover:shadow-md border-none bg-background">
         <div className="aspect-video relative overflow-hidden">
           <img
