@@ -1,7 +1,9 @@
+
 import { useState } from "react";
 import { useLocation } from "react-router-dom";
 import { AudioPlayer } from "@/components/AudioPlayer";
 import { ProgramCard } from "@/components/ProgramCard";
+import { RadioSchedule } from "@/components/RadioSchedule"; // Importer notre nouveau composant
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import FloatingPlayer from "@/components/FloatingPlayer";
 
@@ -164,6 +166,9 @@ const RadioLive = () => {
                 </div>
               </div>
             </div>
+            
+            {/* Intégration du composant RadioSchedule */}
+            <RadioSchedule />
             
             <div className="mt-6 p-4 bg-muted/50 rounded-lg">
               <h3 className="font-medium mb-2">Comment nous écouter</h3>
