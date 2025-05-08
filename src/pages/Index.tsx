@@ -1,4 +1,3 @@
-
 import { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowRight, ChevronRight, ChevronLeft } from 'lucide-react';
@@ -172,7 +171,7 @@ const Index = () => {
   };
 
   return <div className="min-h-screen">
-      {/* Hero Section */}
+      {/* Hero Section - Removed description */}
       <section 
         className="pt-12 pb-16 bg-cover bg-center relative"
         style={{ backgroundImage: 'url("/lovable-uploads/0ee99787-f0d1-4243-ae03-35c677a85f06.png")' }}
@@ -186,10 +185,6 @@ const Index = () => {
               MISHAPI VOICE TV
               <span className="text-primary block mt-2 text-base md:text-lg">La vision Africaine dans le Monde</span>
             </h1>
-            <p className="text-white/85 mb-8 text-lg max-w-2xl mx-auto">
-              Chaîne de référence dans l'Est de la RDC, diffusant des émissions axées sur le développement 
-              de la République Démocratique du Congo et de toute l'Afrique.
-            </p>
             <div className="flex flex-col sm:flex-row gap-4 mb-8">
               <Button className="btn-tv" asChild>
                 <Link to="/tv">
@@ -222,7 +217,7 @@ const Index = () => {
       {/* Live Section */}
       <LiveSection />
 
-      {/* News Section */}
+      {/* News Section - Fix for mobile pagination */}
       <section className="py-12 bg-muted/50">
         <div className="container-custom">
           <Tabs defaultValue="actualites" className="w-full">
@@ -317,7 +312,7 @@ const Index = () => {
               </div>
             </div>
             
-            {/* Deuxième section: 6 more posts avec pagination */}
+            {/* Deuxième section: 6 more posts with pagination */}
             <div id="news-grid" className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {isLoadingMore ? (
                 <>
@@ -347,10 +342,10 @@ const Index = () => {
               )}
             </div>
             
-            {/* Pagination améliorée */}
-            <div className="mt-8">
-              <Pagination>
-                <PaginationContent>
+            {/* Pagination with mobile fixes */}
+            <div className="mt-8 overflow-x-auto pb-2">
+              <Pagination className="max-w-full">
+                <PaginationContent className="flex-wrap gap-1">
                   <PaginationItem>
                     <PaginationPrevious 
                       href="#" 
@@ -358,7 +353,7 @@ const Index = () => {
                         e.preventDefault(); 
                         handlePageChange(currentPage - 1);
                       }} 
-                      className={currentPage === 1 ? "pointer-events-none opacity-50" : ""} 
+                      className={`${currentPage === 1 ? "pointer-events-none opacity-50" : ""} whitespace-nowrap`} 
                     />
                   </PaginationItem>
                   
@@ -390,7 +385,7 @@ const Index = () => {
                         e.preventDefault(); 
                         handlePageChange(currentPage + 1);
                       }} 
-                      className={currentPage === totalPages ? "pointer-events-none opacity-50" : ""} 
+                      className={`${currentPage === totalPages ? "pointer-events-none opacity-50" : ""} whitespace-nowrap`} 
                     />
                   </PaginationItem>
                 </PaginationContent>
