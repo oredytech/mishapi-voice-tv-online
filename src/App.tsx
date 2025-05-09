@@ -9,6 +9,7 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import Index from "@/pages/Index";
 import ArticlePage from "@/pages/ArticlePage";
+import ArticlesPage from "@/pages/ArticlesPage";
 import TvLive from "@/pages/TvLive";
 import RadioLive from "@/pages/RadioLive";
 import Mishapi24 from "@/pages/Mishapi24";
@@ -32,7 +33,7 @@ const App = () => (
                 <Route path="/radio" element={<RadioLive />} />
                 <Route path="/mishapi24" element={<Mishapi24 />} />
                 <Route path="/videos" element={<NotFound />} />
-                <Route path="/actualites" element={<NotFound />} />
+                <Route path="/actualites" element={<ArticlesPage />} />
                 <Route path="/actualites/:slug" element={<ArticlePage />} />
                 {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
                 <Route path="*" element={<NotFound />} />
