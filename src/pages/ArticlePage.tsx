@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { ArrowLeft } from "lucide-react";
@@ -10,6 +9,7 @@ import { SocialShareButtons } from "@/components/SocialShareButtons";
 import { RelatedArticles } from "@/components/RelatedArticles";
 import { RecentComments } from "@/components/RecentComments";
 import { fetchWordPressPostById, WordPressPost, getFeaturedImageUrl } from "@/services/wordpress";
+import { Helmet } from 'react-helmet-async';
 
 export default function ArticlePage() {
   const { slug } = useParams<{ slug: string }>();

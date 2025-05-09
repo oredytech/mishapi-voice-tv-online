@@ -1,6 +1,6 @@
 
 import { useState, useEffect } from 'react';
-import { Helmet } from 'react-helmet';
+import { Helmet } from 'react-helmet-async';
 import { Filter, Search, Grid2x2, LayoutList } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -8,7 +8,7 @@ import { Badge } from '@/components/ui/badge';
 import { WordPressNewsCard } from '@/components/WordPressNewsCard';
 import { fetchWordPressPostsWithPagination, WordPressPost } from '@/services/wordpress';
 import { NewsPagination } from '@/components/NewsPagination';
-import { useToast } from '@/components/ui/use-toast';
+import { useToast } from '@/hooks/use-toast';
 
 const ArticlesPage = () => {
   const [posts, setPosts] = useState<WordPressPost[]>([]);
