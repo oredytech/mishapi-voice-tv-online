@@ -11,6 +11,7 @@ import Index from "@/pages/Index";
 import ArticlePage from "@/pages/ArticlePage";
 import TvLive from "@/pages/TvLive";
 import RadioLive from "@/pages/RadioLive";
+import Mishapi24 from "@/pages/Mishapi24";
 import NotFound from "@/pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -29,7 +30,7 @@ const App = () => (
                 <Route path="/" element={<Index />} />
                 <Route path="/tv" element={<TvLive />} />
                 <Route path="/radio" element={<RadioLive />} />
-                <Route path="/mishapi24" element={<RadioLive />} />
+                <Route path="/mishapi24" element={<Mishapi24 />} />
                 <Route path="/videos" element={<NotFound />} />
                 <Route path="/actualites" element={<NotFound />} />
                 <Route path="/actualites/:slug" element={<ArticlePage />} />

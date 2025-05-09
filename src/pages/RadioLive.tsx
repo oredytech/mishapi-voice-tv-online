@@ -2,8 +2,7 @@
 import { useState } from "react";
 import { useLocation } from "react-router-dom";
 import { AudioPlayer } from "@/components/AudioPlayer";
-import { ProgramCard } from "@/components/ProgramCard";
-import { RadioSchedule } from "@/components/RadioSchedule"; // Importer notre nouveau composant
+import { RadioSchedule } from "@/components/RadioSchedule"; 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import FloatingPlayer from "@/components/FloatingPlayer";
 
@@ -24,87 +23,7 @@ const RadioLive = () => {
   const radioStream = state?.radioStream || DEFAULT_RADIO.stream;
   const radioTitle = state?.radioTitle || DEFAULT_RADIO.title;
   
-  const [activeDay, setActiveDay] = useState("aujourd'hui");
   const [showFloatingPlayer, setShowFloatingPlayer] = useState(false);
-
-  const radioPrograms = {
-    "aujourd'hui": [
-      {
-        title: "Matinale Info",
-        time: "06:00 - 09:00",
-        description: "L'essentiel de l'actualité, la revue de presse et les premiers débats de la journée.",
-        host: "Jean Kabongo",
-        category: "Actualités",
-        isLive: false,
-      },
-      {
-        title: "Parole aux auditeurs",
-        time: "09:00 - 10:30",
-        description: "L'émission interactive où les auditeurs prennent la parole sur les sujets d'actualité.",
-        host: "Marie Lusamba",
-        category: "Talk-show",
-        isLive: true,
-      },
-      {
-        title: "Musique du monde",
-        time: "10:30 - 12:00",
-        description: "Une sélection musicale variée venant des quatre coins de la planète.",
-        host: "Patrick Muyaya",
-        category: "Musique",
-        isLive: false,
-      },
-      {
-        title: "Infos midi",
-        time: "12:00 - 12:30",
-        description: "Le journal de la mi-journée avec les correspondants locaux.",
-        host: "Jean Kabongo",
-        category: "Actualités",
-        isLive: false,
-      },
-      {
-        title: "Talents d'Afrique",
-        time: "14:00 - 16:00",
-        description: "Découverte des nouveaux talents musicaux africains.",
-        host: "Céline Banza",
-        category: "Musique",
-        isLive: false,
-      },
-      {
-        title: "Club économique",
-        time: "16:00 - 17:30",
-        description: "Analyse approfondie des sujets économiques qui font l'actualité.",
-        host: "André Kimbuta",
-        category: "Économie",
-        isLive: false,
-      }
-    ],
-    "demain": [
-      {
-        title: "Matinale Info",
-        time: "06:00 - 09:00",
-        description: "L'essentiel de l'actualité, la revue de presse et les premiers débats de la journée.",
-        host: "Marie Lusamba",
-        category: "Actualités",
-        isLive: false,
-      },
-      {
-        title: "Culture & Patrimoine",
-        time: "09:00 - 10:30",
-        description: "Explorez la richesse du patrimoine culturel congolais et africain.",
-        host: "Patrick Muyaya",
-        category: "Culture",
-        isLive: false,
-      },
-      {
-        title: "Education & Formations",
-        time: "14:00 - 15:30",
-        description: "Conseils et informations sur l'éducation, la formation et l'emploi.",
-        host: "Dr. Muyembe",
-        category: "Education",
-        isLive: false,
-      }
-    ]
-  };
 
   const handleListen = () => {
     setShowFloatingPlayer(true);
@@ -182,26 +101,6 @@ const RadioLive = () => {
           </div>
           
           <div>
-            <div className="bg-card p-4 rounded-lg mb-6 border">
-              <h3 className="font-bold mb-4">Programmes Radio</h3>
-              <Tabs value={activeDay} onValueChange={setActiveDay}>
-                <TabsList className="grid grid-cols-2 w-full">
-                  <TabsTrigger value="aujourd'hui">Aujourd'hui</TabsTrigger>
-                  <TabsTrigger value="demain">Demain</TabsTrigger>
-                </TabsList>
-                <TabsContent value="aujourd'hui" className="mt-4 space-y-4">
-                  {radioPrograms["aujourd'hui"].map((program, index) => (
-                    <ProgramCard key={index} {...program} />
-                  ))}
-                </TabsContent>
-                <TabsContent value="demain" className="mt-4 space-y-4">
-                  {radioPrograms["demain"].map((program, index) => (
-                    <ProgramCard key={index} {...program} />
-                  ))}
-                </TabsContent>
-              </Tabs>
-            </div>
-            
             <div className="p-4 bg-muted/50 rounded-lg">
               <h3 className="font-medium mb-2">Participez à nos émissions</h3>
               <p className="text-sm text-muted-foreground mb-3">

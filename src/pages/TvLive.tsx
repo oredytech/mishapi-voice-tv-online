@@ -2,6 +2,7 @@
 import { useState } from "react";
 import { VideoPlayer } from "@/components/VideoPlayer";
 import { ProgramCard } from "@/components/ProgramCard";
+import { RadioSchedule } from "@/components/RadioSchedule";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
@@ -121,6 +122,9 @@ const TvLive = () => {
                   toute l'Afrique. Disponible sur le bouquet CANAL+ (canal 363).
                 </p>
               </div>
+              
+              {/* Ajout de la grille des programmes */}
+              <RadioSchedule />
               
               <div className="mt-6 p-4 bg-muted/50 rounded-lg">
                 <h3 className="font-medium mb-2">Comment nous regarder</h3>
