@@ -3,10 +3,11 @@ import { useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { categories } from '@/components/Navbar';
+import { useWordPressCategories } from '@/hooks/useWordPressCategories';
 
 export function CategoriesScrollMenu() {
   const categoryScrollRef = useRef<HTMLDivElement>(null);
+  const { categories, isLoading } = useWordPressCategories();
 
   // Scroll function for category menu
   const scroll = (direction: 'left' | 'right') => {
@@ -20,6 +21,14 @@ export function CategoriesScrollMenu() {
     }
   };
 
+  if (isLoading) {
+    return (
+      <div className="mb-6 flex justify-center">
+        <div className="animate-pulse text-muted-foreground">Chargement des catégories...</div>
+      </div>
+    );
+  }
+
   return (
     <div className="mb-6 relative">
       <div className="absolute left-0 top-1/2 -translate-y-1/2 z-10">
@@ -28,8 +37,15 @@ export function CategoriesScrollMenu() {
         </Button>
       </div>
       <div ref={categoryScrollRef} className="flex overflow-x-auto scrollbar-none py-2 space-x-2 px-8">
+        <Link to="/actualites" className="whitespace-nowrap px-3 py-1.5 text-sm bg-primary/10 text-primary rounded-full hover:bg-primary/20">
+          Toutes
+        </Link>
         {categories.map(category => (
-          <Link key={category.name} to={category.path} className="whitespace-nowrap px-3 py-1.5 text-sm bg-muted rounded-full hover:bg-primary/10">
+          <Link 
+            key={category.id} 
+            to={`/actualites/categorie/${category.slug}`} 
+            className="whitespace-nowrap px-3 py-1.5 text-sm bg-muted rounded-full hover:bg-primary/10"
+          >
             {category.name}
           </Link>
         ))}

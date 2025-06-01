@@ -8,49 +8,16 @@ import { useIsMobile } from '@/hooks/use-mobile';
 import { cn } from '@/lib/utils';
 import { Drawer, DrawerContent, DrawerTrigger } from '@/components/ui/drawer';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
+import { useWordPressCategories } from '@/hooks/useWordPressCategories';
 
-// Define categories
-export const categories = [{
-  name: "Actualités Nationales",
-  path: "/actualites/nationales"
-}, {
-  name: "Actualités Internationales",
-  path: "/actualites/internationales"
-}, {
-  name: "Politique",
-  path: "/actualites/politique"
-}, {
-  name: "Économie",
-  path: "/actualites/economie"
-}, {
-  name: "Société",
-  path: "/actualites/societe"
-}, {
-  name: "Culture",
-  path: "/actualites/culture"
-}, {
-  name: "Sport",
-  path: "/actualites/sport"
-}, {
-  name: "Santé",
-  path: "/actualites/sante"
-}, {
-  name: "Technologie",
-  path: "/actualites/technologie"
-}, {
-  name: "Environnement",
-  path: "/actualites/environnement"
-}];
 export default function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isCategoryMenuOpen, setIsCategoryMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const location = useLocation();
-  const {
-    theme,
-    toggleTheme
-  } = useTheme();
+  const { theme, toggleTheme } = useTheme();
   const isMobile = useIsMobile();
+  const { categories } = useWordPressCategories();
   
   useEffect(() => {
     const handleScroll = () => {
@@ -75,15 +42,17 @@ export default function Navbar() {
     path: "/radio",
     icon: <Radio className="h-5 w-5" />
   }, {
-    name: "Catégories",
+    name: "Actualités",
     path: "/actualites"
   }, {
     name: "Contact",
     path: "/contact"
   }];
+
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
   };
+
   const toggleCategoryMenu = () => {
     setIsCategoryMenuOpen(!isCategoryMenuOpen);
   };
@@ -115,8 +84,8 @@ export default function Navbar() {
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end" className="w-56">
-                {categories.map(category => <DropdownMenuItem key={category.name} asChild>
-                    <Link to={category.path}>{category.name}</Link>
+                {categories.map(category => <DropdownMenuItem key={category.id} asChild>
+                    <Link to={`/actualites/categorie/${category.slug}`}>{category.name}</Link>
                   </DropdownMenuItem>)}
               </DropdownMenuContent>
             </DropdownMenu>
@@ -148,6 +117,23 @@ export default function Navbar() {
                 {link.icon && <span className="mr-2">{link.icon}</span>}
                 <span>{link.name}</span>
               </Link>)}
+            
+            {/* Mobile Categories */}
+            <div className="px-3 py-2">
+              <p className="text-sm font-medium text-muted-foreground mb-2">Catégories</p>
+              <div className="space-y-1">
+                {categories.map(category => (
+                  <Link 
+                    key={category.id} 
+                    to={`/actualites/categorie/${category.slug}`}
+                    className="block px-2 py-1 text-sm hover:bg-muted rounded"
+                    onClick={() => setIsMenuOpen(false)}
+                  >
+                    {category.name}
+                  </Link>
+                ))}
+              </div>
+            </div>
           </div>
         </div>
         
@@ -160,7 +146,7 @@ export default function Navbar() {
               </Button>
             </div>
             <div className="space-y-4">
-              {categories.map(category => <Link key={category.name} to={category.path} className="block px-4 py-2 hover:bg-muted rounded-md" onClick={toggleCategoryMenu}>
+              {categories.map(category => <Link key={category.id} to={`/actualites/categorie/${category.slug}`} className="block px-4 py-2 hover:bg-muted rounded-md" onClick={toggleCategoryMenu}>
                   {category.name}
                 </Link>)}
             </div>

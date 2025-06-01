@@ -46,6 +46,17 @@ export interface WordPressApiResponse {
   totalPosts: number;
 }
 
+export interface WordPressCategory {
+  id: number;
+  count: number;
+  description: string;
+  link: string;
+  name: string;
+  slug: string;
+  taxonomy: string;
+  parent: number;
+}
+
 export const fetchWordPressPosts = async (page = 1, perPage = 15): Promise<WordPressPost[]> => {
   try {
     const response = await fetch(
@@ -109,6 +120,70 @@ export const fetchWordPressCategoryPosts = async (categoryId: number, page = 1, 
   } catch (error) {
     console.error(`Error fetching WordPress posts for category ${categoryId}:`, error);
     return [];
+  }
+};
+
+// Nouvelle fonction pour récupérer les catégories WordPress
+export const fetchWordPressCategories = async (): Promise<WordPressCategory[]> => {
+  try {
+    const response = await fetch(
+      `https://mishapivoicetv.net/wp-json/wp/v2/categories?per_page=100&hide_empty=true`
+    );
+    
+    if (!response.ok) {
+      throw new Error('Network response was not ok');
+    }
+    
+    const categories: WordPressCategory[] = await response.json();
+    return categories.filter(cat => cat.count > 0); // Ne retourner que les catégories avec des articles
+  } catch (error) {
+    console.error('Error fetching WordPress categories:', error);
+    return [];
+  }
+};
+
+// Nouvelle fonction pour récupérer les posts d'une catégorie par slug
+export const fetchWordPressCategoryPostsBySlug = async (categorySlug: string, page = 1, perPage = 12): Promise<{ posts: WordPressPost[]; totalPages: number; totalPosts: number; categoryName: string }> => {
+  try {
+    // D'abord récupérer les catégories pour trouver l'ID
+    const categories = await fetchWordPressCategories();
+    const category = categories.find(cat => cat.slug === categorySlug);
+    
+    if (!category) {
+      return {
+        posts: [],
+        totalPages: 0,
+        totalPosts: 0,
+        categoryName: ''
+      };
+    }
+
+    const response = await fetch(
+      `https://mishapivoicetv.net/wp-json/wp/v2/posts?_embed=true&categories=${category.id}&page=${page}&per_page=${perPage}`
+    );
+    
+    if (!response.ok) {
+      throw new Error('Network response was not ok');
+    }
+    
+    const posts: WordPressPost[] = await response.json();
+    const totalPages = parseInt(response.headers.get('X-WP-TotalPages') || '0', 10);
+    const totalPosts = parseInt(response.headers.get('X-WP-Total') || '0', 10);
+    
+    return {
+      posts,
+      totalPages,
+      totalPosts,
+      categoryName: category.name
+    };
+  } catch (error) {
+    console.error(`Error fetching WordPress posts for category ${categorySlug}:`, error);
+    return {
+      posts: [],
+      totalPages: 0,
+      totalPosts: 0,
+      categoryName: ''
+    };
   }
 };
 
