@@ -116,9 +116,12 @@ export const fetchWordPressCategoryPosts = async (categoryId: number, page = 1, 
 export const getFeaturedImageUrl = (post: WordPressPost): string => {
   // Vérifier si le post a une image mise en avant
   if (post._embedded && post._embedded['wp:featuredmedia'] && post._embedded['wp:featuredmedia'][0]) {
-    // Essayer d'obtenir la version large de l'image
-    const mediaDetails = post._embedded['wp:featuredmedia'][0].media_details;
+    const featuredMedia = post._embedded['wp:featuredmedia'][0];
+    
+    // Essayer d'obtenir la version optimale de l'image
+    const mediaDetails = featuredMedia.media_details;
     if (mediaDetails && mediaDetails.sizes) {
+      // Priorité: large -> medium -> full
       if (mediaDetails.sizes.large) {
         return mediaDetails.sizes.large.source_url;
       }
@@ -131,10 +134,37 @@ export const getFeaturedImageUrl = (post: WordPressPost): string => {
     }
     
     // Revenir à l'URL source si les tailles ne sont pas disponibles
-    return post._embedded['wp:featuredmedia'][0].source_url;
+    if (featuredMedia.source_url) {
+      return featuredMedia.source_url;
+    }
   }
   
-  // Image par défaut si aucune image n'est trouvée
+  // Essayer d'extraire une image du contenu de l'article si aucune image mise en avant
+  if (post.content && post.content.rendered) {
+    const imgMatch = post.content.rendered.match(/<img[^>]+src="([^">]+)"/);
+    if (imgMatch && imgMatch[1]) {
+      return imgMatch[1];
+    }
+  }
+  
+  // Images par défaut basées sur la catégorie si disponible
+  const category = post._embedded?.['wp:term']?.[0]?.[0]?.name?.toLowerCase();
+  
+  const categoryImages = {
+    'politique': 'https://images.unsplash.com/photo-1529107386315-e1a2ed48a620?auto=format&fit=crop&w=800&q=80',
+    'économie': 'https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?auto=format&fit=crop&w=800&q=80',
+    'culture': 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=800&q=80',
+    'société': 'https://images.unsplash.com/photo-1573164713714-d95e436ab8d6?auto=format&fit=crop&w=800&q=80',
+    'sports': 'https://images.unsplash.com/photo-1461896836934-ffe607ba8211?auto=format&fit=crop&w=800&q=80',
+    'santé': 'https://images.unsplash.com/photo-1576091160399-112ba8d25d1f?auto=format&fit=crop&w=800&q=80',
+    'éducation': 'https://images.unsplash.com/photo-1427504494785-3a9ca7044f45?auto=format&fit=crop&w=800&q=80'
+  };
+  
+  if (category && categoryImages[category]) {
+    return categoryImages[category];
+  }
+  
+  // Image par défaut générale
   return 'https://images.unsplash.com/photo-1488590528505-98d2b5aba04b?auto=format&fit=crop&w=800&q=80';
 };
 
