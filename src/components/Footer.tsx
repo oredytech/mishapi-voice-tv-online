@@ -1,4 +1,7 @@
+
 import { Link } from "react-router-dom";
+import { PartnersCarousel } from "./PartnersCarousel";
+
 export default function Footer() {
   const currentYear = new Date().getFullYear();
   return <footer className="bg-card mt-12 pt-12 border-t">
@@ -95,11 +98,7 @@ export default function Footer() {
         {/* Partenaires */}
         <div className="mt-8 pt-8 border-t border-border">
           <h3 className="text-center text-lg font-bold mb-4">Nos Partenaires</h3>
-          <div className="flex flex-wrap justify-center gap-8">
-            <img src="/placeholder.svg" alt="Canal+" className="h-12 opacity-70 hover:opacity-100 transition-opacity" />
-            <img src="/placeholder.svg" alt="Partenaire 2" className="h-12 opacity-70 hover:opacity-100 transition-opacity" />
-            <img src="/placeholder.svg" alt="Partenaire 3" className="h-12 opacity-70 hover:opacity-100 transition-opacity" />
-          </div>
+          <PartnersCarousel />
         </div>
 
         {/* Copyright */}
