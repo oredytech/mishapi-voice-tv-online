@@ -20,10 +20,10 @@ export function YouTubeSection() {
     const loadVideos = async () => {
       setIsLoading(true);
       try {
-        const fetchedVideos = await fetchYouTubeVideos(3);
-        setVideos(fetchedVideos);
+        const videosData = await fetchYouTubeVideos(3);
+        setVideos(videosData.videos);
         
-        if (fetchedVideos.length === 0) {
+        if (videosData.videos.length === 0) {
           setError("Aucune vidéo disponible");
         } else {
           setError(null);

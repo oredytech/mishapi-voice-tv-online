@@ -21,6 +21,26 @@ const partners = [
   {
     name: "Rawsur",
     logo: "/lovable-uploads/cabcce17-6aad-42ec-a44a-bb86e1367334.png"
+  },
+  {
+    name: "Betika",
+    logo: "/lovable-uploads/c6513d3c-ef38-41ed-af83-2bae93ca452a.png"
+  },
+  {
+    name: "Sanru",
+    logo: "/lovable-uploads/f3c274fa-49bc-4a80-a398-68ce0b262ccd.png"
+  },
+  {
+    name: "RawBank",
+    logo: "/lovable-uploads/6986c2f0-fd50-458c-b3ad-9d6e7c0a53e4.png"
+  },
+  {
+    name: "Dover Cosmetics",
+    logo: "/lovable-uploads/46fc1ac3-c14c-45be-ade9-2a52b8180cf5.png"
+  },
+  {
+    name: "VOA",
+    logo: "/lovable-uploads/476b2987-f0df-4557-9a59-4fc437c3baf8.png"
   }
 ];
 
