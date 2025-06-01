@@ -15,6 +15,7 @@ import RadioLive from "@/pages/RadioLive";
 import Mishapi24 from "@/pages/Mishapi24";
 import NotFound from "@/pages/NotFound";
 import CategoryPage from "@/pages/CategoryPage";
+import VideosPage from "@/pages/VideosPage";
 
 // Create a stable QueryClient instance
 const queryClient = new QueryClient({
@@ -44,7 +45,7 @@ const App = () => (
                   <Route path="/tv" element={<TvLive />} />
                   <Route path="/radio" element={<RadioLive />} />
                   <Route path="/mishapi24" element={<Mishapi24 />} />
-                  <Route path="/videos" element={<NotFound />} />
+                  <Route path="/videos" element={<VideosPage />} />
                   <Route path="/actualites" element={<ArticlesPage />} />
                   <Route path="/actualites/categorie/:categorySlug" element={<CategoryPage />} />
                   <Route path="/actualites/:slug" element={<ArticlePage />} />
