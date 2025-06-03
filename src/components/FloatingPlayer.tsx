@@ -21,27 +21,31 @@ export default function FloatingPlayer({
   if (!isVisible) return null;
 
   return (
-    <div className="player-container">
-      <div className="container mx-auto">
-        <div className="flex items-center justify-between bg-card rounded-t-lg shadow-lg">
+    <div className="fixed bottom-0 left-0 right-0 z-50 bg-background border-t shadow-lg">
+      <div className="container mx-auto max-w-4xl">
+        <div className="flex items-center justify-between">
           <button 
             onClick={() => setIsMinimized(!isMinimized)} 
-            className="p-2 hover:bg-muted rounded-full ml-2"
+            className="p-3 hover:bg-muted rounded-none transition-colors"
             title={isMinimized ? "Agrandir" : "Réduire"}
           >
-            {isMinimized ? <ChevronUp size={18} /> : <ChevronDown size={18} />}
+            {isMinimized ? <ChevronUp size={20} /> : <ChevronDown size={20} />}
           </button>
           
-          <div className={`flex-1 transition-all duration-300 ${isMinimized ? "max-h-0 opacity-0 invisible" : "max-h-20 opacity-100 visible"}`}>
+          <div className={`flex-1 px-2 transition-all duration-300 ease-in-out ${
+            isMinimized 
+              ? "max-h-0 opacity-0 overflow-hidden" 
+              : "max-h-24 opacity-100 py-2"
+          }`}>
             <AudioPlayer audioUrl={audioUrl} title={title} />
           </div>
           
           <button 
             onClick={onClose} 
-            className="p-2 hover:bg-muted rounded-full mr-2"
+            className="p-3 hover:bg-muted rounded-none transition-colors"
             title="Fermer"
           >
-            <X size={18} />
+            <X size={20} />
           </button>
         </div>
       </div>
