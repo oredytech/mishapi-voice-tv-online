@@ -41,6 +41,26 @@ const partners = [
   {
     name: "VOA",
     logo: "/lovable-uploads/476b2987-f0df-4557-9a59-4fc437c3baf8.png"
+  },
+  {
+    name: "RT",
+    logo: "/lovable-uploads/8972c0f7-2b1a-473a-8a37-dae2d6195119.png"
+  },
+  {
+    name: "IGF",
+    logo: "/lovable-uploads/7f2a4b07-0e4d-4e01-a1f0-4f38382fc6f5.png"
+  },
+  {
+    name: "Angel Cosmetics",
+    logo: "/lovable-uploads/8b3f571d-0f37-4c79-af87-3d674966cad0.png"
+  },
+  {
+    name: "FONAREV",
+    logo: "/lovable-uploads/3711706f-65ec-4e29-8a33-90caf47f2903.png"
+  },
+  {
+    name: "Kanny",
+    logo: "/lovable-uploads/b3108f2c-b03b-4676-9ede-91ffcd769003.png"
   }
 ];
 
