@@ -80,6 +80,26 @@ const partners = [
   {
     name: "World Vision",
     logo: "/lovable-uploads/b513f2a4-7cf2-4e4b-8c72-375d7a7d00c2.png"
+  },
+  {
+    name: "CMG",
+    logo: "/lovable-uploads/6bdd0fdc-29f3-4482-ac94-ad0180083c2c.png"
+  },
+  {
+    name: "GM Tours and Travel",
+    logo: "/lovable-uploads/450ac773-bbbb-47d2-bb37-8433d91855a8.png"
+  },
+  {
+    name: "Brasimba",
+    logo: "/lovable-uploads/3b3a81a2-ea61-4e9f-a9e8-bd127234cbe8.png"
+  },
+  {
+    name: "Eyano Santé Clinic",
+    logo: "/lovable-uploads/375a772f-40eb-4be9-8634-9f5c42d35435.png"
+  },
+  {
+    name: "REGIDESO",
+    logo: "/lovable-uploads/5799d11d-b37d-4bf0-b425-f24b6c2be34a.png"
   }
 ];
 
