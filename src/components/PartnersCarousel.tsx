@@ -1,4 +1,3 @@
-
 import { useEffect, useRef } from 'react';
 
 const partners = [
@@ -61,6 +60,26 @@ const partners = [
   {
     name: "Kanny",
     logo: "/lovable-uploads/b3108f2c-b03b-4676-9ede-91ffcd769003.png"
+  },
+  {
+    name: "SUNU Group",
+    logo: "/lovable-uploads/d3812958-4569-42ff-b2c6-72fc28c4c007.png"
+  },
+  {
+    name: "HEAL Africa",
+    logo: "/lovable-uploads/9d2563ba-a254-4134-b947-b6b3b65127b3.png"
+  },
+  {
+    name: "SNEL",
+    logo: "/lovable-uploads/64224176-889b-4649-88bd-829ca56c4bb4.png"
+  },
+  {
+    name: "Africell",
+    logo: "/lovable-uploads/87874423-6c71-4f6e-8b2d-796ebfde77d5.png"
+  },
+  {
+    name: "World Vision",
+    logo: "/lovable-uploads/b513f2a4-7cf2-4e4b-8c72-375d7a7d00c2.png"
   }
 ];
 
