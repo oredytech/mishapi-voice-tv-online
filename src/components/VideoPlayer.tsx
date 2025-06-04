@@ -26,7 +26,7 @@ export function VideoPlayer({ title }: VideoPlayerProps) {
   }, []);
 
   useEffect(() => {
-    // Injecter du CSS pour masquer les éléments indésirables
+    // Injecter du CSS pour masquer les éléments indésirables sans dupliquer le player
     const iframe = iframeRef.current;
     if (iframe) {
       iframe.onload = () => {
@@ -36,11 +36,6 @@ export function VideoPlayer({ title }: VideoPlayerProps) {
             // Créer une feuille de style pour masquer les éléments indésirables
             const style = iframeDoc.createElement('style');
             style.textContent = `
-              /* Masquer tous les éléments sauf le player vidéo */
-              body > *:not(video):not([class*="video"]):not([id*="video"]):not([class*="player"]):not([id*="player"]) {
-                display: none !important;
-              }
-              
               /* Masquer les barres de navigation, headers, footers */
               header, nav, footer, .header, .nav, .footer, .navigation, .menu {
                 display: none !important;
@@ -51,12 +46,14 @@ export function VideoPlayer({ title }: VideoPlayerProps) {
                 display: none !important;
               }
               
-              /* Bloquer le défilement */
+              /* Bloquer complètement le défilement */
               html, body {
                 overflow: hidden !important;
                 height: 100vh !important;
                 margin: 0 !important;
                 padding: 0 !important;
+                position: fixed !important;
+                width: 100% !important;
               }
               
               /* Masquer les popups et modales */
@@ -64,20 +61,13 @@ export function VideoPlayer({ title }: VideoPlayerProps) {
                 display: none !important;
               }
               
-              /* S'assurer que le player vidéo prend tout l'espace */
-              video, [class*="video"], [id*="video"], [class*="player"], [id*="player"] {
-                width: 100% !important;
-                height: 100vh !important;
-                max-width: none !important;
-                max-height: none !important;
-                position: fixed !important;
-                top: 0 !important;
-                left: 0 !important;
-                z-index: 9999 !important;
+              /* Masquer les contrôles externes et éléments non-vidéo */
+              .controls:not(video .controls), .ui-controls, .external-controls {
+                display: none !important;
               }
               
-              /* Masquer les contrôles externes */
-              .controls:not(video .controls), .ui-controls, .external-controls {
+              /* Masquer tout sauf le conteneur du player */
+              body > *:not([class*="player"]):not([id*="player"]):not(script):not(style) {
                 display: none !important;
               }
               
@@ -88,13 +78,30 @@ export function VideoPlayer({ title }: VideoPlayerProps) {
                 -moz-user-select: none !important;
                 -ms-user-select: none !important;
               }
+              
+              /* Bloquer tous les événements de défilement */
+              * {
+                overflow: hidden !important;
+              }
             `;
             iframeDoc.head.appendChild(style);
             
-            // Bloquer les événements de défilement
-            iframeDoc.addEventListener('scroll', (e) => e.preventDefault());
-            iframeDoc.addEventListener('wheel', (e) => e.preventDefault());
-            iframeDoc.addEventListener('touchmove', (e) => e.preventDefault());
+            // Bloquer tous les événements de défilement et mouvement
+            const preventScroll = (e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              return false;
+            };
+            
+            iframeDoc.addEventListener('scroll', preventScroll, { passive: false });
+            iframeDoc.addEventListener('wheel', preventScroll, { passive: false });
+            iframeDoc.addEventListener('touchmove', preventScroll, { passive: false });
+            iframeDoc.addEventListener('keydown', (e) => {
+              // Bloquer les touches de défilement
+              if ([32, 33, 34, 35, 36, 37, 38, 39, 40].includes(e.keyCode)) {
+                preventScroll(e);
+              }
+            });
           }
         } catch (error) {
           // Ignorer les erreurs de cross-origin
@@ -130,6 +137,7 @@ export function VideoPlayer({ title }: VideoPlayerProps) {
             pointerEvents: 'auto',
             overflow: 'hidden'
           }}
+          scrolling="no"
         />
       </div>
       
