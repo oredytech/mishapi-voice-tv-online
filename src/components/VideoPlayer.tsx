@@ -33,7 +33,7 @@ export function VideoPlayer({ title }: VideoPlayerProps) {
         try {
           const iframeDoc = iframe.contentDocument || iframe.contentWindow?.document;
           if (iframeDoc) {
-            // Créer une feuille de style pour masquer tout sauf le player
+            // Créer une feuille de style pour masquer tout sauf le player et repositionner le contenu
             const style = iframeDoc.createElement('style');
             style.textContent = `
               /* Masquer complètement l'en-tête et la navigation */
@@ -52,7 +52,7 @@ export function VideoPlayer({ title }: VideoPlayerProps) {
                 display: none !important;
               }
               
-              /* Bloquer complètement le défilement sur tout */
+              /* Repositionner le body pour commencer au niveau du player */
               html, body {
                 overflow: hidden !important;
                 height: 100vh !important;
@@ -61,6 +61,7 @@ export function VideoPlayer({ title }: VideoPlayerProps) {
                 position: fixed !important;
                 width: 100% !important;
                 background: #000 !important;
+                transform: translateY(-25%) !important;
               }
               
               /* Masquer toutes les fenêtres surgissantes et modales */
@@ -77,15 +78,16 @@ export function VideoPlayer({ title }: VideoPlayerProps) {
               [class*="video"], [class*="player"], [class*="stream"],
               [id*="video"], [id*="player"], [id*="stream"] {
                 width: 100% !important;
-                height: 100vh !important;
+                height: 125% !important;
                 position: fixed !important;
                 top: 0 !important;
                 left: 0 !important;
                 z-index: 999999 !important;
                 background: #000 !important;
+                transform: none !important;
               }
               
-              /* Masquer tous les autres éléments du body */
+              /* Masquer tous les autres éléments du body sauf le player */
               body > *:not([class*="video"]):not([class*="player"]):not([class*="stream"]):not(script):not(style) {
                 display: none !important;
               }
@@ -96,6 +98,7 @@ export function VideoPlayer({ title }: VideoPlayerProps) {
                 height: 100% !important;
                 max-width: none !important;
                 max-height: none !important;
+                transform: none !important;
               }
               
               /* Bloquer la sélection de texte */
@@ -119,7 +122,7 @@ export function VideoPlayer({ title }: VideoPlayerProps) {
             `;
             iframeDoc.head.appendChild(style);
             
-            // Script pour forcer la mise en page du lecteur
+            // Script pour forcer la mise en page du lecteur et repositionner le contenu
             const script = iframeDoc.createElement('script');
             script.textContent = `
               // Fonction pour identifier et isoler le lecteur vidéo
@@ -129,9 +132,13 @@ export function VideoPlayer({ title }: VideoPlayerProps) {
                 
                 if (videoElements.length > 0) {
                   videoElements.forEach(el => {
-                    el.style.cssText = 'width: 100% !important; height: 100vh !important; position: fixed !important; top: 0 !important; left: 0 !important; z-index: 999999 !important;';
+                    el.style.cssText = 'width: 100% !important; height: 125% !important; position: fixed !important; top: 0 !important; left: 0 !important; z-index: 999999 !important; transform: none !important;';
                   });
                 }
+                
+                // Repositionner le body pour commencer au niveau du player
+                document.body.style.transform = 'translateY(-25%)';
+                document.documentElement.style.transform = 'translateY(-25%)';
                 
                 // Masquer tous les autres éléments
                 const allElements = document.querySelectorAll('body > *');
@@ -192,7 +199,7 @@ export function VideoPlayer({ title }: VideoPlayerProps) {
 
   return (
     <div ref={containerRef} className="relative overflow-hidden rounded-lg bg-black">
-      {/* Lecteur vidéo intégré optimisé */}
+      {/* Lecteur vidéo intégré optimisé avec repositionnement */}
       <div className="relative w-full" style={{ paddingBottom: '56.25%' }}>
         <iframe
           ref={iframeRef}
@@ -204,7 +211,8 @@ export function VideoPlayer({ title }: VideoPlayerProps) {
           sandbox="allow-scripts allow-same-origin allow-presentation allow-popups-to-escape-sandbox"
           style={{
             pointerEvents: 'auto',
-            overflow: 'hidden'
+            overflow: 'hidden',
+            clipPath: 'inset(25% 0 0 0)'
           }}
           scrolling="no"
           frameBorder="0"
