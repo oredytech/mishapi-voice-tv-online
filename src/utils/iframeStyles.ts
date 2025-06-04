@@ -25,7 +25,7 @@ export const createIframeStyles = () => `
     position: fixed !important;
     width: 100% !important;
     background: #000 !important;
-    transform: translateY(-25%) !important;
+    transform: translateY(25%) !important;
   }
   
   /* Masquer toutes les fenêtres surgissantes et modales */
