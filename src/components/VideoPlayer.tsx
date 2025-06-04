@@ -26,27 +26,33 @@ export function VideoPlayer({ title }: VideoPlayerProps) {
   }, []);
 
   useEffect(() => {
-    // Injecter du CSS pour masquer les éléments indésirables sans dupliquer le player
+    // Isoler uniquement le lecteur vidéo et bloquer tout le reste
     const iframe = iframeRef.current;
     if (iframe) {
       iframe.onload = () => {
         try {
           const iframeDoc = iframe.contentDocument || iframe.contentWindow?.document;
           if (iframeDoc) {
-            // Créer une feuille de style pour masquer les éléments indésirables
+            // Créer une feuille de style pour masquer tout sauf le player
             const style = iframeDoc.createElement('style');
             style.textContent = `
-              /* Masquer les barres de navigation, headers, footers */
-              header, nav, footer, .header, .nav, .footer, .navigation, .menu {
+              /* Masquer complètement l'en-tête et la navigation */
+              header, .header, nav, .nav, .navbar, .navigation, .menu, .top-bar {
+                display: none !important;
+                visibility: hidden !important;
+              }
+              
+              /* Masquer footer et éléments de bas de page */
+              footer, .footer, .bottom-bar {
                 display: none !important;
               }
               
-              /* Masquer les sidebars et contenus latéraux */
-              .sidebar, .aside, .widget, .ad, .advertisement {
+              /* Masquer sidebars et contenus latéraux */
+              .sidebar, .aside, .widget, .ad, .advertisement, .banner {
                 display: none !important;
               }
               
-              /* Bloquer complètement le défilement */
+              /* Bloquer complètement le défilement sur tout */
               html, body {
                 overflow: hidden !important;
                 height: 100vh !important;
@@ -54,57 +60,120 @@ export function VideoPlayer({ title }: VideoPlayerProps) {
                 padding: 0 !important;
                 position: fixed !important;
                 width: 100% !important;
+                background: #000 !important;
               }
               
-              /* Masquer les popups et modales */
-              .modal, .popup, .overlay, .dialog, [role="dialog"], [role="alertdialog"] {
+              /* Masquer toutes les fenêtres surgissantes et modales */
+              .modal, .popup, .overlay, .dialog, .alert, .notification,
+              [role="dialog"], [role="alertdialog"], [role="modal"] {
+                display: none !important;
+                visibility: hidden !important;
+                opacity: 0 !important;
+                z-index: -1 !important;
+              }
+              
+              /* Cibler spécifiquement le conteneur du lecteur vidéo */
+              .video-container, .player-container, .stream-container,
+              [class*="video"], [class*="player"], [class*="stream"],
+              [id*="video"], [id*="player"], [id*="stream"] {
+                width: 100% !important;
+                height: 100vh !important;
+                position: fixed !important;
+                top: 0 !important;
+                left: 0 !important;
+                z-index: 999999 !important;
+                background: #000 !important;
+              }
+              
+              /* Masquer tous les autres éléments du body */
+              body > *:not([class*="video"]):not([class*="player"]):not([class*="stream"]):not(script):not(style) {
                 display: none !important;
               }
               
-              /* Masquer les contrôles externes et éléments non-vidéo */
-              .controls:not(video .controls), .ui-controls, .external-controls {
-                display: none !important;
+              /* S'assurer que les éléments vidéo prennent tout l'espace */
+              video, iframe[src*="video"], iframe[src*="stream"], iframe[src*="player"] {
+                width: 100% !important;
+                height: 100% !important;
+                max-width: none !important;
+                max-height: none !important;
               }
               
-              /* Masquer tout sauf le conteneur du player */
-              body > *:not([class*="player"]):not([id*="player"]):not(script):not(style) {
-                display: none !important;
-              }
-              
-              /* Empêcher la sélection de texte */
+              /* Bloquer la sélection de texte */
               * {
                 user-select: none !important;
                 -webkit-user-select: none !important;
                 -moz-user-select: none !important;
                 -ms-user-select: none !important;
+                overflow: hidden !important;
               }
               
-              /* Bloquer tous les événements de défilement */
-              * {
-                overflow: hidden !important;
+              /* Masquer les contrôles externes */
+              .controls:not(video .controls), .ui-controls, .external-controls {
+                display: none !important;
+              }
+              
+              /* Bloquer les messages d'erreur et alertes */
+              .error, .warning, .alert-message, .toast {
+                display: none !important;
               }
             `;
             iframeDoc.head.appendChild(style);
             
-            // Bloquer tous les événements de défilement et mouvement
-            const preventScroll = (e) => {
-              e.preventDefault();
-              e.stopPropagation();
-              return false;
+            // Script pour forcer la mise en page du lecteur
+            const script = iframeDoc.createElement('script');
+            script.textContent = `
+              // Fonction pour identifier et isoler le lecteur vidéo
+              function isolateVideoPlayer() {
+                // Chercher les éléments vidéo
+                const videoElements = document.querySelectorAll('video, iframe[src*="video"], iframe[src*="stream"], [class*="video"], [class*="player"], [class*="stream"]');
+                
+                if (videoElements.length > 0) {
+                  videoElements.forEach(el => {
+                    el.style.cssText = 'width: 100% !important; height: 100vh !important; position: fixed !important; top: 0 !important; left: 0 !important; z-index: 999999 !important;';
+                  });
+                }
+                
+                // Masquer tous les autres éléments
+                const allElements = document.querySelectorAll('body > *');
+                allElements.forEach(el => {
+                  if (!el.matches('video, iframe[src*="video"], iframe[src*="stream"], [class*="video"], [class*="player"], [class*="stream"], script, style')) {
+                    el.style.display = 'none';
+                  }
+                });
+              }
+              
+              // Exécuter immédiatement et après chargement
+              isolateVideoPlayer();
+              document.addEventListener('DOMContentLoaded', isolateVideoPlayer);
+              
+              // Surveiller les changements DOM pour bloquer les nouveaux éléments
+              const observer = new MutationObserver(isolateVideoPlayer);
+              observer.observe(document.body, { childList: true, subtree: true });
+            `;
+            iframeDoc.head.appendChild(script);
+            
+            // Bloquer tous les événements de défilement et interaction indésirable
+            const preventAll = (e) => {
+              if (e.target && !e.target.matches('video, video *, [class*="video"] *, [class*="player"] *')) {
+                e.preventDefault();
+                e.stopPropagation();
+                return false;
+              }
             };
             
-            iframeDoc.addEventListener('scroll', preventScroll, { passive: false });
-            iframeDoc.addEventListener('wheel', preventScroll, { passive: false });
-            iframeDoc.addEventListener('touchmove', preventScroll, { passive: false });
-            iframeDoc.addEventListener('keydown', (e) => {
-              // Bloquer les touches de défilement
-              if ([32, 33, 34, 35, 36, 37, 38, 39, 40].includes(e.keyCode)) {
-                preventScroll(e);
-              }
+            ['scroll', 'wheel', 'touchmove', 'contextmenu'].forEach(event => {
+              iframeDoc.addEventListener(event, preventAll, { passive: false, capture: true });
             });
+            
+            // Bloquer les touches de défilement
+            iframeDoc.addEventListener('keydown', (e) => {
+              if ([32, 33, 34, 35, 36, 37, 38, 39, 40, 27].includes(e.keyCode)) {
+                e.preventDefault();
+                e.stopPropagation();
+              }
+            }, { passive: false });
           }
         } catch (error) {
-          // Ignorer les erreurs de cross-origin
           console.log('Cross-origin restrictions - styling not applied');
         }
       };
@@ -123,21 +192,22 @@ export function VideoPlayer({ title }: VideoPlayerProps) {
 
   return (
     <div ref={containerRef} className="relative overflow-hidden rounded-lg bg-black">
-      {/* Lecteur vidéo intégré d'afriqueendirect.tv */}
+      {/* Lecteur vidéo intégré optimisé */}
       <div className="relative w-full" style={{ paddingBottom: '56.25%' }}>
         <iframe
           ref={iframeRef}
           src="https://afriqueendirect.tv/mishapi_voice_tv"
           className="absolute top-0 left-0 w-full h-full border-0"
           allowFullScreen
-          allow="autoplay; encrypted-media"
+          allow="autoplay; encrypted-media; fullscreen"
           title={title}
-          sandbox="allow-scripts allow-same-origin allow-presentation"
+          sandbox="allow-scripts allow-same-origin allow-presentation allow-popups-to-escape-sandbox"
           style={{
             pointerEvents: 'auto',
             overflow: 'hidden'
           }}
           scrolling="no"
+          frameBorder="0"
         />
       </div>
       
