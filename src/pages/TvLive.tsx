@@ -1,13 +1,34 @@
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { VideoPlayer } from "@/components/VideoPlayer";
 import { ProgramCard } from "@/components/ProgramCard";
 import { RadioSchedule } from "@/components/RadioSchedule";
+import { WordPressNewsCard } from "@/components/WordPressNewsCard";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { fetchWordPressPosts, WordPressPost } from "@/services/wordpress";
 
 const TvLive = () => {
   const [activeDay, setActiveDay] = useState("aujourd'hui");
+  const [recentArticles, setRecentArticles] = useState<WordPressPost[]>([]);
+  const [isLoadingArticles, setIsLoadingArticles] = useState(true);
+
+  // Load recent articles
+  useEffect(() => {
+    const loadRecentArticles = async () => {
+      setIsLoadingArticles(true);
+      try {
+        const articles = await fetchWordPressPosts(1, 6);
+        setRecentArticles(articles);
+      } catch (error) {
+        console.error('Error loading recent articles:', error);
+      } finally {
+        setIsLoadingArticles(false);
+      }
+    };
+
+    loadRecentArticles();
+  }, []);
 
   const tvPrograms = {
     "aujourd'hui": [
@@ -140,23 +161,26 @@ const TvLive = () => {
           
           <div>
             <div className="bg-card p-4 rounded-lg mb-6 border">
-              <h3 className="font-bold mb-4">Programmes TV</h3>
-              <Tabs value={activeDay} onValueChange={setActiveDay}>
-                <TabsList className="grid grid-cols-2 w-full">
-                  <TabsTrigger value="aujourd'hui">Aujourd'hui</TabsTrigger>
-                  <TabsTrigger value="demain">Demain</TabsTrigger>
-                </TabsList>
-                <TabsContent value="aujourd'hui" className="mt-4 space-y-4">
-                  {tvPrograms["aujourd'hui"].map((program, index) => (
-                    <ProgramCard key={index} {...program} />
+              <h3 className="font-bold mb-4">Articles Récents</h3>
+              {isLoadingArticles ? (
+                <div className="space-y-4">
+                  {[...Array(6)].map((_, i) => (
+                    <div key={i} className="flex gap-3 items-start">
+                      <div className="w-16 h-16 bg-muted animate-pulse rounded-md"></div>
+                      <div className="flex-1 space-y-2">
+                        <div className="h-4 bg-muted animate-pulse rounded w-3/4"></div>
+                        <div className="h-3 bg-muted animate-pulse rounded w-1/2"></div>
+                      </div>
+                    </div>
                   ))}
-                </TabsContent>
-                <TabsContent value="demain" className="mt-4 space-y-4">
-                  {tvPrograms["demain"].map((program, index) => (
-                    <ProgramCard key={index} {...program} />
+                </div>
+              ) : (
+                <div className="space-y-4">
+                  {recentArticles.map(article => (
+                    <WordPressNewsCard key={article.id} post={article} variant="small" />
                   ))}
-                </TabsContent>
-              </Tabs>
+                </div>
+              )}
             </div>
           </div>
         </div>
