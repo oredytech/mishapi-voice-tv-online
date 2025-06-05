@@ -19,27 +19,6 @@ export function useIframeSetup(iframeRef: React.RefObject<HTMLIFrameElement>) {
             const script = iframeDoc.createElement('script');
             script.textContent = createIframeScript();
             iframeDoc.head.appendChild(script);
-            
-            // Bloquer tous les événements de défilement et interaction indésirable
-            const preventAll = (e: Event) => {
-              if (e.target && !(e.target as Element).matches('video, video *, [class*="video"] *, [class*="player"] *')) {
-                e.preventDefault();
-                e.stopPropagation();
-                return false;
-              }
-            };
-            
-            ['scroll', 'wheel', 'touchmove', 'contextmenu'].forEach(event => {
-              iframeDoc.addEventListener(event, preventAll, { passive: false, capture: true });
-            });
-            
-            // Bloquer les touches de défilement
-            iframeDoc.addEventListener('keydown', (e: KeyboardEvent) => {
-              if ([32, 33, 34, 35, 36, 37, 38, 39, 40, 27].includes(e.keyCode)) {
-                e.preventDefault();
-                e.stopPropagation();
-              }
-            }, { passive: false });
           }
         } catch (error) {
           console.log('Cross-origin restrictions - styling not applied');

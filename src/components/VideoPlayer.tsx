@@ -17,7 +17,7 @@ export function VideoPlayer({ title }: VideoPlayerProps) {
 
   return (
     <div ref={containerRef} className="relative overflow-hidden rounded-lg bg-black">
-      {/* Lecteur vidéo intégré optimisé avec repositionnement */}
+      {/* Lecteur vidéo intégré */}
       <div className="relative w-full" style={{ paddingBottom: '56.25%' }}>
         <iframe
           ref={iframeRef}
@@ -28,11 +28,9 @@ export function VideoPlayer({ title }: VideoPlayerProps) {
           title={title}
           sandbox="allow-scripts allow-same-origin allow-presentation allow-popups-to-escape-sandbox"
           style={{
-            pointerEvents: 'auto',
-            overflow: 'hidden',
-            clipPath: 'inset(25% 0 0 0)'
+            pointerEvents: 'auto'
           }}
-          scrolling="no"
+          scrolling="yes"
           frameBorder="0"
         />
       </div>
