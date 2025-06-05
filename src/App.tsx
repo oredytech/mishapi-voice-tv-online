@@ -51,7 +51,8 @@ const App = () => (
                   <Route path="/contact" element={<ContactPage />} />
                   <Route path="/actualites" element={<ArticlesPage />} />
                   <Route path="/actualites/categorie/:categorySlug" element={<CategoryPage />} />
-                  <Route path="/actualites/:slug" element={<ArticlePage />} />
+                  {/* Article routes - slug-based without /actualites prefix */}
+                  <Route path="/:slug" element={<ArticlePage />} />
                   {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
                   <Route path="*" element={<NotFound />} />
                 </Routes>

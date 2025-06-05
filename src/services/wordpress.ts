@@ -104,7 +104,6 @@ export const fetchWordPressPostsWithPagination = async (page = 1, perPage = 15):
   }
 };
 
-// Fonction pour récupérer les posts d'une catégorie spécifique
 export const fetchWordPressCategoryPosts = async (categoryId: number, page = 1, perPage = 5): Promise<WordPressPost[]> => {
   try {
     const response = await fetch(
@@ -123,7 +122,6 @@ export const fetchWordPressCategoryPosts = async (categoryId: number, page = 1, 
   }
 };
 
-// Nouvelle fonction pour récupérer les catégories WordPress
 export const fetchWordPressCategories = async (): Promise<WordPressCategory[]> => {
   try {
     const response = await fetch(
@@ -135,17 +133,15 @@ export const fetchWordPressCategories = async (): Promise<WordPressCategory[]> =
     }
     
     const categories: WordPressCategory[] = await response.json();
-    return categories.filter(cat => cat.count > 0); // Ne retourner que les catégories avec des articles
+    return categories.filter(cat => cat.count > 0);
   } catch (error) {
     console.error('Error fetching WordPress categories:', error);
     return [];
   }
 };
 
-// Nouvelle fonction pour récupérer les posts d'une catégorie par slug
 export const fetchWordPressCategoryPostsBySlug = async (categorySlug: string, page = 1, perPage = 12): Promise<{ posts: WordPressPost[]; totalPages: number; totalPosts: number; categoryName: string }> => {
   try {
-    // D'abord récupérer les catégories pour trouver l'ID
     const categories = await fetchWordPressCategories();
     const category = categories.find(cat => cat.slug === categorySlug);
     
@@ -187,16 +183,12 @@ export const fetchWordPressCategoryPostsBySlug = async (categorySlug: string, pa
   }
 };
 
-// Fonction pour récupérer l'URL de l'image en avant d'un article
 export const getFeaturedImageUrl = (post: WordPressPost): string => {
-  // Vérifier si le post a une image mise en avant
   if (post._embedded && post._embedded['wp:featuredmedia'] && post._embedded['wp:featuredmedia'][0]) {
     const featuredMedia = post._embedded['wp:featuredmedia'][0];
     
-    // Essayer d'obtenir la version optimale de l'image
     const mediaDetails = featuredMedia.media_details;
     if (mediaDetails && mediaDetails.sizes) {
-      // Priorité: large -> medium -> full
       if (mediaDetails.sizes.large) {
         return mediaDetails.sizes.large.source_url;
       }
@@ -208,13 +200,11 @@ export const getFeaturedImageUrl = (post: WordPressPost): string => {
       }
     }
     
-    // Revenir à l'URL source si les tailles ne sont pas disponibles
     if (featuredMedia.source_url) {
       return featuredMedia.source_url;
     }
   }
   
-  // Essayer d'extraire une image du contenu de l'article si aucune image mise en avant
   if (post.content && post.content.rendered) {
     const imgMatch = post.content.rendered.match(/<img[^>]+src="([^">]+)"/);
     if (imgMatch && imgMatch[1]) {
@@ -222,7 +212,6 @@ export const getFeaturedImageUrl = (post: WordPressPost): string => {
     }
   }
   
-  // Images par défaut basées sur la catégorie si disponible - GARANTIR UNE IMAGE
   const category = post._embedded?.['wp:term']?.[0]?.[0]?.name?.toLowerCase();
   
   const categoryImages = {
@@ -239,11 +228,9 @@ export const getFeaturedImageUrl = (post: WordPressPost): string => {
     return categoryImages[category];
   }
   
-  // Image par défaut générale - TOUJOURS RETOURNER UNE IMAGE
   return 'https://images.unsplash.com/photo-1488590528505-98d2b5aba04b?auto=format&fit=crop&w=800&q=80';
 };
 
-// New function to fetch a single WordPress post by ID
 export const fetchWordPressPostById = async (id: number): Promise<WordPressPost | null> => {
   try {
     const response = await fetch(
@@ -262,7 +249,24 @@ export const fetchWordPressPostById = async (id: number): Promise<WordPressPost 
   }
 };
 
-// New function to create a slug from post title
+export const fetchWordPressPostBySlug = async (slug: string): Promise<WordPressPost | null> => {
+  try {
+    const response = await fetch(
+      `https://mishapivoicetv.net/wp-json/wp/v2/posts?_embed=true&slug=${slug}`
+    );
+    
+    if (!response.ok) {
+      throw new Error('Network response was not ok');
+    }
+    
+    const posts: WordPressPost[] = await response.json();
+    return posts.length > 0 ? posts[0] : null;
+  } catch (error) {
+    console.error(`Error fetching WordPress post with slug ${slug}:`, error);
+    return null;
+  }
+};
+
 export const createSlugFromTitle = (title: string): string => {
   return title
     .toLowerCase()
@@ -272,14 +276,21 @@ export const createSlugFromTitle = (title: string): string => {
     .trim();
 };
 
-// New function to decode HTML entities in titles
+export const getArticleSlug = (post: WordPressPost): string => {
+  if (post.slug) {
+    return post.slug;
+  }
+  
+  const cleanTitle = decodeHtmlEntities(post.title.rendered);
+  return createSlugFromTitle(cleanTitle);
+};
+
 export const decodeHtmlEntities = (html: string): string => {
   const textArea = document.createElement('textarea');
   textArea.innerHTML = html;
   return textArea.value;
 };
 
-// New function to get a clean title from WordPress post
 export const getCleanTitle = (post: WordPressPost): string => {
   return decodeHtmlEntities(post.title.rendered);
 };

@@ -11,6 +11,7 @@ interface NewsCardProps {
   category: string;
   date: string;
   author?: string;
+  slug?: string;
 }
 
 export function NewsCard({
@@ -21,12 +22,16 @@ export function NewsCard({
   category,
   date,
   author,
+  slug,
 }: NewsCardProps) {
   // Force display of an image - use provided image or fallback
   const displayImage = image || 'https://images.unsplash.com/photo-1488590528505-98d2b5aba04b?auto=format&fit=crop&w=800&q=80';
+  
+  // Create link using slug if available, otherwise fallback to id
+  const articleLink = slug ? `/${slug}` : `/actualites/${id}`;
 
   return (
-    <Link to={`/actualites/${id}`} className="group">
+    <Link to={articleLink} className="group">
       <Card className="h-full overflow-hidden transition-all hover:shadow-md">
         <div className="aspect-video relative overflow-hidden">
           <img

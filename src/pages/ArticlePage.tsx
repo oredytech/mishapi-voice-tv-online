@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { ArrowLeft } from "lucide-react";
@@ -9,7 +8,7 @@ import { CommentForm } from "@/components/CommentForm";
 import { SocialShareButtons } from "@/components/SocialShareButtons";
 import { RelatedArticles } from "@/components/RelatedArticles";
 import { RecentComments } from "@/components/RecentComments";
-import { fetchWordPressPostById, WordPressPost, getFeaturedImageUrl } from "@/services/wordpress";
+import { fetchWordPressPostBySlug, WordPressPost, getFeaturedImageUrl } from "@/services/wordpress";
 import { Helmet } from 'react-helmet-async';
 
 export default function ArticlePage() {
@@ -32,38 +31,7 @@ export default function ArticlePage() {
         
         console.log("Slug reçu:", slug);
         
-        // Essayer différents formats d'extraction d'ID
-        let postId: number | null = null;
-        
-        // Format 1: "title-slug-123" (ID à la fin)
-        const idMatchEnd = slug.match(/-(\d+)$/);
-        if (idMatchEnd) {
-          postId = parseInt(idMatchEnd[1], 10);
-          console.log("ID extrait du format fin:", postId);
-        }
-        
-        // Format 2: "123" (ID seul)
-        if (!postId && /^\d+$/.test(slug)) {
-          postId = parseInt(slug, 10);
-          console.log("ID extrait du format direct:", postId);
-        }
-        
-        // Format 3: "slug-123-more-text" (ID au milieu)
-        if (!postId) {
-          const idMatchMiddle = slug.match(/(\d+)/);
-          if (idMatchMiddle) {
-            postId = parseInt(idMatchMiddle[1], 10);
-            console.log("ID extrait du format milieu:", postId);
-          }
-        }
-        
-        if (!postId || isNaN(postId)) {
-          console.error("Impossible d'extraire l'ID du slug:", slug);
-          throw new Error("Format d'URL invalide - ID non trouvé");
-        }
-        
-        console.log("Tentative de récupération de l'article avec l'ID:", postId);
-        const fetchedPost = await fetchWordPressPostById(postId);
+        const fetchedPost = await fetchWordPressPostBySlug(slug);
         
         if (!fetchedPost) {
           throw new Error("Article non trouvé");
@@ -87,8 +55,8 @@ export default function ArticlePage() {
     loadArticle();
   }, [slug, navigate]);
 
-  // Get the current URL for social sharing
-  const currentUrl = window.location.href;
+  // Get the current URL for social sharing with main domain
+  const currentUrl = `https://mishapivoicetv.net/${slug}`;
 
   return (
     <div className="container-custom py-8">
