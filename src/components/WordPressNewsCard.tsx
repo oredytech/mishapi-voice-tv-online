@@ -1,4 +1,3 @@
-
 import { Link } from "react-router-dom";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -10,6 +9,7 @@ interface WordPressNewsCardProps {
 }
 
 export function WordPressNewsCard({ post, variant = 'default' }: WordPressNewsCardProps) {
+  // Force display of an image - always get a valid image URL
   const imageUrl = getFeaturedImageUrl(post);
   const category = post._embedded?.['wp:term']?.[0]?.[0]?.name || 'Actualité';
   const author = post._embedded?.author?.[0]?.name;
@@ -27,7 +27,14 @@ export function WordPressNewsCard({ post, variant = 'default' }: WordPressNewsCa
     return (
       <Link to={articleUrl} className="group flex gap-3 items-start">
         <div className="w-24 h-24 shrink-0 rounded-md overflow-hidden">
-          <img src={imageUrl} alt="" className="w-full h-full object-cover" />
+          <img 
+            src={imageUrl} 
+            alt="" 
+            className="w-full h-full object-cover"
+            onError={(e) => {
+              e.currentTarget.src = 'https://images.unsplash.com/photo-1488590528505-98d2b5aba04b?auto=format&fit=crop&w=800&q=80';
+            }}
+          />
         </div>
         <div className="flex-1">
           <h3 className="font-medium group-hover:text-primary line-clamp-2 text-sm" 
@@ -51,6 +58,9 @@ export function WordPressNewsCard({ post, variant = 'default' }: WordPressNewsCa
             src={imageUrl}
             alt=""
             className="w-full h-full object-cover transition-transform group-hover:scale-105"
+            onError={(e) => {
+              e.currentTarget.src = 'https://images.unsplash.com/photo-1488590528505-98d2b5aba04b?auto=format&fit=crop&w=800&q=80';
+            }}
           />
           <div className="absolute top-2 left-2">
             <Badge variant="secondary" className="bg-primary/80 hover:bg-primary text-white">

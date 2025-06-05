@@ -222,7 +222,7 @@ export const getFeaturedImageUrl = (post: WordPressPost): string => {
     }
   }
   
-  // Images par défaut basées sur la catégorie si disponible
+  // Images par défaut basées sur la catégorie si disponible - GARANTIR UNE IMAGE
   const category = post._embedded?.['wp:term']?.[0]?.[0]?.name?.toLowerCase();
   
   const categoryImages = {
@@ -239,7 +239,7 @@ export const getFeaturedImageUrl = (post: WordPressPost): string => {
     return categoryImages[category];
   }
   
-  // Image par défaut générale
+  // Image par défaut générale - TOUJOURS RETOURNER UNE IMAGE
   return 'https://images.unsplash.com/photo-1488590528505-98d2b5aba04b?auto=format&fit=crop&w=800&q=80';
 };
 

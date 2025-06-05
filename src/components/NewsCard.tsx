@@ -22,14 +22,20 @@ export function NewsCard({
   date,
   author,
 }: NewsCardProps) {
+  // Force display of an image - use provided image or fallback
+  const displayImage = image || 'https://images.unsplash.com/photo-1488590528505-98d2b5aba04b?auto=format&fit=crop&w=800&q=80';
+
   return (
     <Link to={`/actualites/${id}`} className="group">
       <Card className="h-full overflow-hidden transition-all hover:shadow-md">
         <div className="aspect-video relative overflow-hidden">
           <img
-            src={image}
+            src={displayImage}
             alt={title}
             className="w-full h-full object-cover transition-transform group-hover:scale-105"
+            onError={(e) => {
+              e.currentTarget.src = 'https://images.unsplash.com/photo-1488590528505-98d2b5aba04b?auto=format&fit=crop&w=800&q=80';
+            }}
           />
           <div className="absolute top-2 left-2">
             <Badge variant={category === "Politique" ? "destructive" : "default"}>
