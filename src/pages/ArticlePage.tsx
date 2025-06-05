@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { ArrowLeft } from "lucide-react";
@@ -29,14 +30,39 @@ export default function ArticlePage() {
           throw new Error("Article non trouvé");
         }
         
-        // Extract post ID from slug: "title-slug-123"
-        const idMatch = slug.match(/-(\d+)$/);
+        console.log("Slug reçu:", slug);
         
-        if (!idMatch) {
-          throw new Error("Format d'URL invalide");
+        // Essayer différents formats d'extraction d'ID
+        let postId: number | null = null;
+        
+        // Format 1: "title-slug-123" (ID à la fin)
+        const idMatchEnd = slug.match(/-(\d+)$/);
+        if (idMatchEnd) {
+          postId = parseInt(idMatchEnd[1], 10);
+          console.log("ID extrait du format fin:", postId);
         }
         
-        const postId = parseInt(idMatch[1], 10);
+        // Format 2: "123" (ID seul)
+        if (!postId && /^\d+$/.test(slug)) {
+          postId = parseInt(slug, 10);
+          console.log("ID extrait du format direct:", postId);
+        }
+        
+        // Format 3: "slug-123-more-text" (ID au milieu)
+        if (!postId) {
+          const idMatchMiddle = slug.match(/(\d+)/);
+          if (idMatchMiddle) {
+            postId = parseInt(idMatchMiddle[1], 10);
+            console.log("ID extrait du format milieu:", postId);
+          }
+        }
+        
+        if (!postId || isNaN(postId)) {
+          console.error("Impossible d'extraire l'ID du slug:", slug);
+          throw new Error("Format d'URL invalide - ID non trouvé");
+        }
+        
+        console.log("Tentative de récupération de l'article avec l'ID:", postId);
         const fetchedPost = await fetchWordPressPostById(postId);
         
         if (!fetchedPost) {
