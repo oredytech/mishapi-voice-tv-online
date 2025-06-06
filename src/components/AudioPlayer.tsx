@@ -1,7 +1,8 @@
 
-import { useState, useRef, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { Volume, Volume1, Volume2, VolumeX, Play, Pause } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { useAudio } from '@/contexts/AudioContext';
 
 interface AudioPlayerProps {
   audioUrl: string;
@@ -9,96 +10,31 @@ interface AudioPlayerProps {
 }
 
 export function AudioPlayer({ audioUrl, title }: AudioPlayerProps) {
-  const [isPlaying, setIsPlaying] = useState(false);
-  const [volume, setVolume] = useState(0.7);
-  const [isMuted, setIsMuted] = useState(false);
+  const { isPlaying, currentTrack, volume, isMuted, playAudio, pauseAudio, setVolume, toggleMute } = useAudio();
   const [isLoading, setIsLoading] = useState(false);
-  const audioRef = useRef<HTMLAudioElement>(null);
-  const previousVolumeRef = useRef(volume);
-
-  useEffect(() => {
-    // Mettre à jour l'URL de l'audio si elle change
-    if (audioRef.current) {
-      audioRef.current.src = audioUrl;
-      audioRef.current.volume = volume;
-      if (isPlaying) {
-        setIsLoading(true);
-        audioRef.current.play().catch(error => {
-          console.error("Erreur de lecture audio:", error);
-          setIsPlaying(false);
-          setIsLoading(false);
-        });
-      }
-    }
-  }, [audioUrl]);
-
-  useEffect(() => {
-    // Écouter l'événement d'autoplay
-    const handleAutoplay = (event: CustomEvent) => {
-      if (event.detail.url === audioUrl) {
-        togglePlay();
-      }
-    };
-
-    window.addEventListener('autoplay-radio', handleAutoplay as EventListener);
-    return () => {
-      window.removeEventListener('autoplay-radio', handleAutoplay as EventListener);
-    };
-  }, [audioUrl]);
+  
+  const isCurrentTrack = currentTrack?.url === audioUrl;
+  const isThisTrackPlaying = isCurrentTrack && isPlaying;
 
   const togglePlay = () => {
-    if (audioRef.current) {
+    if (isCurrentTrack) {
       if (isPlaying) {
-        audioRef.current.pause();
-        setIsPlaying(false);
-        setIsLoading(false);
+        pauseAudio();
       } else {
         setIsLoading(true);
-        audioRef.current.play().catch(error => {
-          console.error("Erreur de lecture audio:", error);
-          setIsPlaying(false);
-          setIsLoading(false);
-        });
+        playAudio(audioUrl, title);
+        setIsLoading(false);
       }
-    }
-  };
-
-  const handleCanPlay = () => {
-    setIsLoading(false);
-    setIsPlaying(true);
-  };
-
-  const handleError = () => {
-    setIsLoading(false);
-    setIsPlaying(false);
-    console.error("Erreur de chargement audio");
-  };
-
-  const toggleMute = () => {
-    if (audioRef.current) {
-      if (isMuted) {
-        setVolume(previousVolumeRef.current);
-        audioRef.current.volume = previousVolumeRef.current;
-      } else {
-        previousVolumeRef.current = volume;
-        setVolume(0);
-        audioRef.current.volume = 0;
-      }
-      setIsMuted(!isMuted);
+    } else {
+      setIsLoading(true);
+      playAudio(audioUrl, title);
+      setIsLoading(false);
     }
   };
 
   const handleVolumeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newVolume = parseFloat(e.target.value);
     setVolume(newVolume);
-    if (audioRef.current) {
-      audioRef.current.volume = newVolume;
-    }
-    if (newVolume > 0 && isMuted) {
-      setIsMuted(false);
-    } else if (newVolume === 0 && !isMuted) {
-      setIsMuted(true);
-    }
   };
 
   const getVolumeIcon = () => {
@@ -115,26 +51,17 @@ export function AudioPlayer({ audioUrl, title }: AudioPlayerProps) {
 
   return (
     <div className="flex items-center p-3 bg-card border rounded-lg">
-      <audio 
-        ref={audioRef} 
-        src={audioUrl} 
-        preload="none"
-        onCanPlay={handleCanPlay}
-        onError={handleError}
-        onPause={() => setIsPlaying(false)}
-      />
-      
       <Button 
         variant="outline" 
         size="icon"
-        className={`mr-3 transition-all ${isPlaying ? 'bg-primary text-primary-foreground' : ''} ${isLoading ? 'opacity-50' : ''}`}
+        className={`mr-3 transition-all ${isThisTrackPlaying ? 'bg-primary text-primary-foreground' : ''} ${isLoading ? 'opacity-50' : ''}`}
         onClick={togglePlay}
         disabled={isLoading}
-        title={isPlaying ? "Pause" : "Play"}
+        title={isThisTrackPlaying ? "Pause" : "Play"}
       >
         {isLoading ? (
           <div className="w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin" />
-        ) : isPlaying ? (
+        ) : isThisTrackPlaying ? (
           <Pause size={18} />
         ) : (
           <Play size={18} />
@@ -170,7 +97,7 @@ export function AudioPlayer({ audioUrl, title }: AudioPlayerProps) {
         </div>
         <div className="text-sm font-medium truncate">
           {title}
-          {isPlaying && (
+          {isThisTrackPlaying && (
             <span className="ml-2 text-primary flex items-center">
               <span className="w-2 h-2 bg-primary rounded-full mr-1 animate-pulse"></span>
               En direct

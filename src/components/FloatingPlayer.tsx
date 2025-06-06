@@ -2,6 +2,7 @@
 import { useState } from 'react';
 import { X, ChevronUp, ChevronDown } from 'lucide-react';
 import { AudioPlayer } from './AudioPlayer';
+import { useAudio } from '@/contexts/AudioContext';
 
 interface FloatingPlayerProps {
   isVisible: boolean;
@@ -17,8 +18,10 @@ export default function FloatingPlayer({
   title 
 }: FloatingPlayerProps) {
   const [isMinimized, setIsMinimized] = useState(false);
+  const { currentTrack, isPlaying } = useAudio();
 
-  if (!isVisible) return null;
+  // Afficher le lecteur flottant seulement s'il y a une piste en cours de lecture
+  if (!isVisible || !currentTrack || !isPlaying) return null;
 
   return (
     <div className="fixed bottom-0 left-0 right-0 z-50 bg-background border-t shadow-lg">
@@ -37,7 +40,7 @@ export default function FloatingPlayer({
               ? "max-h-0 opacity-0 overflow-hidden" 
               : "max-h-24 opacity-100 py-2"
           }`}>
-            <AudioPlayer audioUrl={audioUrl} title={title} />
+            <AudioPlayer audioUrl={currentTrack.url} title={currentTrack.title} />
           </div>
           
           <button 
