@@ -27,8 +27,8 @@ export function NewsCard({
   // Force display of an image - use provided image or fallback
   const displayImage = image || 'https://images.unsplash.com/photo-1488590528505-98d2b5aba04b?auto=format&fit=crop&w=800&q=80';
   
-  // Create link using slug if available, otherwise fallback to id
-  const articleLink = slug ? `/${slug}` : `/actualites/${id}`;
+  // Use only slug for the URL, fallback to id if no slug
+  const articleLink = slug ? `/${slug}` : `/${id}`;
 
   return (
     <Link to={articleLink} className="group">

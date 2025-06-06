@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { ArrowLeft } from "lucide-react";
@@ -55,7 +56,7 @@ export default function ArticlePage() {
     loadArticle();
   }, [slug, navigate]);
 
-  // Get the current URL for social sharing with main domain
+  // Get the current URL for social sharing with main domain - use only slug
   const currentUrl = `https://mishapivoicetv.net/${slug}`;
 
   return (

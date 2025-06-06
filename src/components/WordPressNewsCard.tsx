@@ -1,7 +1,8 @@
+
 import { Link } from "react-router-dom";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { WordPressPost, getFeaturedImageUrl, getCleanTitle, createSlugFromTitle } from "@/services/wordpress";
+import { WordPressPost, getFeaturedImageUrl, getCleanTitle } from "@/services/wordpress";
 
 interface WordPressNewsCardProps {
   post: WordPressPost;
@@ -19,9 +20,9 @@ export function WordPressNewsCard({ post, variant = 'default' }: WordPressNewsCa
     day: 'numeric' 
   });
 
-  const cleanTitle = getCleanTitle(post);
-  const slug = post.slug || createSlugFromTitle(cleanTitle);
-  const articleUrl = `/actualites/${slug}-${post.id}`;
+  // Use only the slug for the URL, no ID
+  const slug = post.slug || post.id.toString();
+  const articleUrl = `/${slug}`;
 
   if (variant === 'small') {
     return (
