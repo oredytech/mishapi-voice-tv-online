@@ -22,5 +22,29 @@
     <!-- IMPORTANT: DO NOT REMOVE THIS SCRIPT TAG OR THIS VERY COMMENT! -->
     <script src="https://cdn.gpteng.co/gptengineer.js" type="module"></script>
     <script type="module" src="/src/main.tsx"></script>
+    <script>
+      window.addEventListener('DOMContentLoaded', () => {
+        const notifyParentOfPath = () => {
+          window.parent.postMessage(
+            {
+              type: 'spa-path-update',
+              slug: window.location.pathname
+            },
+            '*'
+          );
+        };
+      
+        notifyParentOfPath(); // envoyer au premier chargement
+      
+        // Envoyer le nouveau slug à chaque navigation (si tu utilises un routeur comme VueRouter ou ReactRouter)
+        window.addEventListener('popstate', notifyParentOfPath);
+        window.history.pushState = new Proxy(window.history.pushState, {
+          apply: function (target, thisArg, argumentsList) {
+            target.apply(thisArg, argumentsList);
+            notifyParentOfPath();
+          }
+        });
+      });
+    </script>
   </body>
 </html>
