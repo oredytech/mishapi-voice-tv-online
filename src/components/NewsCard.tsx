@@ -27,7 +27,7 @@ export function NewsCard({
   // Force display of an image - use provided image or fallback
   const displayImage = image || 'https://images.unsplash.com/photo-1488590528505-98d2b5aba04b?auto=format&fit=crop&w=800&q=80';
   
-  // Use only slug for the URL, fallback to id if no slug
+  // Use the slug directly for clean URLs
   const articleLink = slug ? `/${slug}` : `/${id}`;
 
   return (

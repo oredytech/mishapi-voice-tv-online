@@ -51,9 +51,11 @@ const App = () => (
                   <Route path="/contact" element={<ContactPage />} />
                   <Route path="/actualites" element={<ArticlesPage />} />
                   <Route path="/actualites/categorie/:categorySlug" element={<CategoryPage />} />
-                  {/* Article routes - slug-based without /actualites prefix */}
+                  {/* Article routes - specific article slug pattern to avoid conflicts */}
+                  <Route path="/article/:slug" element={<ArticlePage />} />
+                  {/* Fallback route for direct slug access (for legacy URLs and direct sharing) */}
                   <Route path="/:slug" element={<ArticlePage />} />
-                  {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+                  {/* 404 catch-all - MUST be last */}
                   <Route path="*" element={<NotFound />} />
                 </Routes>
               </main>

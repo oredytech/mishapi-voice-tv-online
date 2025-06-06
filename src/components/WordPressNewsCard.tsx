@@ -20,7 +20,7 @@ export function WordPressNewsCard({ post, variant = 'default' }: WordPressNewsCa
     day: 'numeric' 
   });
 
-  // Use only the slug for the URL, no ID
+  // Use the slug directly for clean URLs
   const slug = post.slug || post.id.toString();
   const articleUrl = `/${slug}`;
 

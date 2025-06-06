@@ -27,7 +27,7 @@ export function NewsSlider({ posts }: NewsSliderProps) {
     <Carousel className="w-full relative">
       <CarouselContent>
         {posts.map((post) => {
-          // Use only the slug for the URL, no ID
+          // Use the slug directly for clean URLs
           const slug = post.slug || post.id.toString();
           const articleUrl = `/${slug}`;
           
