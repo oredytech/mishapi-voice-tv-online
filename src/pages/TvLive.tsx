@@ -110,26 +110,28 @@ const TvLive = () => {
   };
 
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen overflow-x-hidden">
       <div className="container-custom py-8">
         <h1 className="text-3xl font-bold mb-6">TV en direct</h1>
         
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          <div className="lg:col-span-2">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 lg:gap-8">
+          <div className="lg:col-span-2 min-w-0">
             <div className="sticky top-24">
-              <VideoPlayer
-                videoUrl="https://example.com/tv-stream"
-                title="MISHAPI VOICE TV - Direct"
-                poster="https://images.unsplash.com/photo-1605810230434-7631ac76ec81?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=800&q=80"
-              />
+              <div className="w-full max-w-full overflow-hidden">
+                <VideoPlayer
+                  videoUrl="https://example.com/tv-stream"
+                  title="MISHAPI VOICE TV - Direct"
+                  poster="https://images.unsplash.com/photo-1605810230434-7631ac76ec81?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=800&q=80"
+                />
+              </div>
               
-              <div className="mt-4 flex items-start justify-between">
-                <div>
+              <div className="mt-4 flex items-start justify-between flex-wrap gap-4">
+                <div className="min-w-0 flex-1">
                   <h2 className="text-xl font-bold">En direct maintenant</h2>
-                  <h3 className="text-lg font-medium mt-1">Débat Éco</h3>
+                  <h3 className="text-lg font-medium mt-1 truncate">Débat Éco</h3>
                   <p className="text-muted-foreground text-sm">Avec Marie Lusamba</p>
                 </div>
-                <Button variant="outline" className="flex items-center gap-2">
+                <Button variant="outline" className="flex items-center gap-2 shrink-0">
                   <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" x2="12" y1="3" y2="15"/></svg>
                   Partager
                 </Button>
@@ -137,7 +139,7 @@ const TvLive = () => {
               
               <div className="mt-6">
                 <h2 className="text-xl font-bold mb-2">À propos de MISHAPI VOICE TV</h2>
-                <p className="text-muted-foreground">
+                <p className="text-muted-foreground text-sm lg:text-base">
                   MISHAPI VOICE TV est une chaîne de référence dans l'Est de la RDC, diffusant des 
                   émissions axées sur le développement de la République Démocratique du Congo et de 
                   toute l'Afrique. Disponible sur le bouquet CANAL+ (canal 363).
@@ -145,7 +147,9 @@ const TvLive = () => {
               </div>
               
               {/* Ajout de la grille des programmes */}
-              <RadioSchedule />
+              <div className="mt-6 overflow-hidden">
+                <RadioSchedule />
+              </div>
               
               <div className="mt-6 p-4 bg-muted/50 rounded-lg">
                 <h3 className="font-medium mb-2">Comment nous regarder</h3>
@@ -159,15 +163,15 @@ const TvLive = () => {
             </div>
           </div>
           
-          <div>
-            <div className="bg-card p-4 rounded-lg mb-6 border">
+          <div className="min-w-0">
+            <div className="bg-card p-4 rounded-lg mb-6 border overflow-hidden">
               <h3 className="font-bold mb-4">Articles Récents</h3>
               {isLoadingArticles ? (
                 <div className="space-y-4">
                   {[...Array(6)].map((_, i) => (
                     <div key={i} className="flex gap-3 items-start">
-                      <div className="w-16 h-16 bg-muted animate-pulse rounded-md"></div>
-                      <div className="flex-1 space-y-2">
+                      <div className="w-16 h-16 bg-muted animate-pulse rounded-md shrink-0"></div>
+                      <div className="flex-1 space-y-2 min-w-0">
                         <div className="h-4 bg-muted animate-pulse rounded w-3/4"></div>
                         <div className="h-3 bg-muted animate-pulse rounded w-1/2"></div>
                       </div>
@@ -177,7 +181,9 @@ const TvLive = () => {
               ) : (
                 <div className="space-y-4">
                   {recentArticles.map(article => (
-                    <WordPressNewsCard key={article.id} post={article} variant="small" />
+                    <div key={article.id} className="overflow-hidden">
+                      <WordPressNewsCard post={article} variant="small" />
+                    </div>
                   ))}
                 </div>
               )}
