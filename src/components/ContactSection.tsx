@@ -58,8 +58,8 @@ export function ContactSection() {
                   </div>
                   <div>
                     <h4 className="font-medium">Téléphone</h4>
-                    <p className="text-muted-foreground">+243 123 456 789</p>
-                    <p className="text-muted-foreground">+243 987 654 321</p>
+                    <p className="text-muted-foreground">+243 971 121 702</p>
+                    <p className="text-muted-foreground">+243 852 920 441</p>
                   </div>
                 </div>
                 
@@ -72,7 +72,7 @@ export function ContactSection() {
                   </div>
                   <div>
                     <h4 className="font-medium">Email</h4>
-                    <p className="text-muted-foreground">contact@mishapivoicetv.net</p>
+                    <p className="text-muted-foreground">mishapivoicetv.adg@gmail.com</p>
                     <p className="text-muted-foreground">info@mishapivoicetv.net</p>
                   </div>
                 </div>
@@ -86,8 +86,11 @@ export function ContactSection() {
                   </div>
                   <div>
                     <h4 className="font-medium">Adresse</h4>
-                    <p className="text-muted-foreground">123 Avenue des Médias</p>
+                    <p className="text-muted-foreground">Commune de KARISIMBI, Quarier MURARA, Avenue: Cooperative No 2</p>
                     <p className="text-muted-foreground">Goma, Nord-Kivu</p>
+                    <p className="text-muted-foreground">République Démocratique du Congo</p>
+                    <p className="text-muted-foreground">Commune de Mont-Ngafula, Quartier Masangabila, Avenue: Tshikwiva No 23</p>
+                    <p className="text-muted-foreground">Kinshasa</p>
                     <p className="text-muted-foreground">République Démocratique du Congo</p>
                   </div>
                 </div>
