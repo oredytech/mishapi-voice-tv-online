@@ -1,38 +1,30 @@
-
 import { ChevronUp, ChevronDown, Maximize, Minimize } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useFullscreen } from '@/hooks/useFullscreen';
 import { useIframeSetup } from '@/hooks/useIframeSetup';
-
 interface VideoPlayerProps {
   videoUrl?: string;
   title: string;
   poster?: string;
 }
-
-export function VideoPlayer({ title }: VideoPlayerProps) {
-  const { isFullscreen, containerRef, iframeRef, toggleFullscreen } = useFullscreen();
-  
+export function VideoPlayer({
+  title
+}: VideoPlayerProps) {
+  const {
+    isFullscreen,
+    containerRef,
+    iframeRef,
+    toggleFullscreen
+  } = useFullscreen();
   useIframeSetup(iframeRef);
-
-  return (
-    <div ref={containerRef} className="relative overflow-hidden rounded-lg bg-black">
+  return <div ref={containerRef} className="relative overflow-hidden rounded-lg bg-black">
       {/* Lecteur vidéo intégré */}
-      <div className="relative w-full" style={{ paddingBottom: '56.25%' }}>
-        <iframe
-          ref={iframeRef}
-          src="https://afriqueendirect.tv/mishapi_voice_tv"
-          className="absolute top-0 left-0 w-full h-full border-0"
-          allowFullScreen
-          allow="autoplay; encrypted-media; fullscreen"
-          title={title}
-          sandbox="allow-scripts allow-same-origin allow-presentation allow-popups-to-escape-sandbox"
-          style={{
-            pointerEvents: 'auto'
-          }}
-          scrolling="yes"
-          frameBorder="0"
-        />
+      <div className="relative w-full" style={{
+      paddingBottom: '56.25%'
+    }}>
+        <iframe ref={iframeRef} src="https://afriqueendirect.tv/mishapi_voice_tv" className="absolute top-0 left-0 w-full h-full border-0" allowFullScreen allow="autoplay; encrypted-media; fullscreen" title={title} sandbox="allow-scripts allow-same-origin allow-presentation allow-popups-to-escape-sandbox" style={{
+        pointerEvents: 'auto'
+      }} scrolling="yes" frameBorder="0" />
       </div>
       
       <div className="absolute bottom-0 left-0 right-0 p-2 bg-gradient-to-t from-black/80 to-transparent">        
@@ -46,19 +38,8 @@ export function VideoPlayer({ title }: VideoPlayerProps) {
             </span>
           </div>
           
-          <div className="flex items-center">
-            <span className="text-white text-sm mr-2 hidden sm:block">{title}</span>
-            <Button
-              variant="ghost"
-              size="icon"
-              className="text-white hover:bg-white/20"
-              onClick={toggleFullscreen}
-            >
-              {isFullscreen ? <Minimize size={18} /> : <Maximize size={18} />}
-            </Button>
-          </div>
+          
         </div>
       </div>
-    </div>
-  );
+    </div>;
 }
