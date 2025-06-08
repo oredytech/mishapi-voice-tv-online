@@ -306,14 +306,31 @@ export const fetchWordPressCategoryPostsBySlug = async (categorySlug: string, pa
 };
 
 export const getFeaturedImageUrl = (post: WordPressPost): string => {
+  console.log('Post object:', post);
+  console.log('Post _embedded:', post._embedded);
+  console.log('Featured media array:', post._embedded?.["wp:featuredmedia"]);
+  
   try {
-    if (post._embedded && post._embedded["wp:featuredmedia"] && post._embedded["wp:featuredmedia"].length > 0) {
-      return post._embedded["wp:featuredmedia"][0].source_url;
+    // Check if there's embedded featured media
+    if (post._embedded && 
+        post._embedded["wp:featuredmedia"] && 
+        post._embedded["wp:featuredmedia"].length > 0 && 
+        post._embedded["wp:featuredmedia"][0].source_url) {
+      
+      const imageUrl = post._embedded["wp:featuredmedia"][0].source_url;
+      console.log('Found featured image URL:', imageUrl);
+      return imageUrl;
     }
-    return 'https://images.unsplash.com/photo-1488590528505-98d2b5aba04b?auto=format&fit=crop&w=800&q=80'; // Provide a default image URL
+    
+    // Log when no featured image is found
+    console.log('No featured image found for post:', post.title.rendered);
+    console.log('Post featured_media ID:', post.featured_media);
+    
+    // Return default image when no featured image is available
+    return 'https://images.unsplash.com/photo-1488590528505-98d2b5aba04b?auto=format&fit=crop&w=800&q=80';
   } catch (error) {
     console.error("Error getting featured image URL:", error);
-    return 'https://images.unsplash.com/photo-1488590528505-98d2b5aba04b?auto=format&fit=crop&w=800&q=80'; // Ensure a fallback in case of errors
+    return 'https://images.unsplash.com/photo-1488590528505-98d2b5aba04b?auto=format&fit=crop&w=800&q=80';
   }
 };
 
