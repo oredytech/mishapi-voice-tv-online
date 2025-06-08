@@ -1,10 +1,9 @@
-
 import { useState, useEffect } from "react";
 import { VideoPlayer } from "@/components/VideoPlayer";
 import { ProgramCard } from "@/components/ProgramCard";
 import { RadioSchedule } from "@/components/RadioSchedule";
 import { WordPressNewsCard } from "@/components/WordPressNewsCard";
-import { Button } from "@/components/ui/button";
+import { SocialShareButtons } from "@/components/SocialShareButtons";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { fetchWordPressPosts, WordPressPost } from "@/services/wordpress";
 
@@ -127,14 +126,15 @@ const TvLive = () => {
               
               <div className="mt-4 flex items-start justify-between flex-wrap gap-4">
                 <div className="min-w-0 flex-1">
-                  <h2 className="text-xl font-bold">En direct maintenant</h2>
                   <h3 className="text-lg font-medium mt-1 truncate">Débat Éco</h3>
                   <p className="text-muted-foreground text-sm">Avec Marie Lusamba</p>
                 </div>
-                <Button variant="outline" className="flex items-center gap-2 shrink-0">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" x2="12" y1="3" y2="15"/></svg>
-                  Partager
-                </Button>
+                <div className="shrink-0">
+                  <SocialShareButtons 
+                    url="https://mishapivoicetv.net/tv" 
+                    title="MISHAPI VOICE TV - Direct" 
+                  />
+                </div>
               </div>
               
               <div className="mt-6">

@@ -1,10 +1,9 @@
-
 import { Link } from "react-router-dom";
 import { PartnersCarousel } from "./PartnersCarousel";
 
 export default function Footer() {
   const currentYear = new Date().getFullYear();
-  return <footer className="bg-card mt-12 pt-12 border-t">
+  return <footer className="bg-card mt-12 pt-12 border-t pb-10">
       <div className="container-custom">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
           {/* About */}
