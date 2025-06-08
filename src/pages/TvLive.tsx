@@ -126,8 +126,6 @@ const TvLive = () => {
               
               <div className="mt-4 flex items-start justify-between flex-wrap gap-4">
                 <div className="min-w-0 flex-1">
-                  <h3 className="text-lg font-medium mt-1 truncate">Débat Éco</h3>
-                  <p className="text-muted-foreground text-sm">Avec Marie Lusamba</p>
                 </div>
                 <div className="shrink-0">
                   <SocialShareButtons 
