@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { VideoPlayer } from "@/components/VideoPlayer";
 import { ProgramCard } from "@/components/ProgramCard";
@@ -38,14 +39,6 @@ const TvLive = () => {
         host: "Jean Kabongo",
         category: "Actualités",
         isLive: false,
-      },
-      {
-        title: "Débat Éco",
-        time: "12:30 - 13:30",
-        description: "Analyse des enjeux économiques actuels en RDC et en Afrique.",
-        host: "Marie Lusamba",
-        category: "Économie",
-        isLive: true,
       },
       {
         title: "Culture Express",
@@ -113,9 +106,9 @@ const TvLive = () => {
       <div className="container-custom py-8">
         <h1 className="text-3xl font-bold mb-6">TV en direct</h1>
         
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 lg:gap-8">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 lg:gap-8 items-start">
           <div className="lg:col-span-2 min-w-0">
-            <div className="sticky top-24">
+            <div className="space-y-6">
               <div className="w-full max-w-full overflow-hidden">
                 <VideoPlayer
                   videoUrl="https://example.com/tv-stream"
@@ -124,9 +117,7 @@ const TvLive = () => {
                 />
               </div>
               
-              <div className="mt-4 flex items-start justify-between flex-wrap gap-4">
-                <div className="min-w-0 flex-1">
-                </div>
+              <div className="flex items-start justify-between flex-wrap gap-4">
                 <div className="shrink-0">
                   <SocialShareButtons 
                     url="https://mishapivoicetv.net/tv" 
@@ -135,7 +126,7 @@ const TvLive = () => {
                 </div>
               </div>
               
-              <div className="mt-6">
+              <div>
                 <h2 className="text-xl font-bold mb-2">À propos de MISHAPI VOICE TV</h2>
                 <p className="text-muted-foreground text-sm lg:text-base">
                   MISHAPI VOICE TV est une chaîne de référence dans l'Est de la RDC, diffusant des 
@@ -145,11 +136,11 @@ const TvLive = () => {
               </div>
               
               {/* Ajout de la grille des programmes */}
-              <div className="mt-6 overflow-hidden">
+              <div className="overflow-hidden">
                 <RadioSchedule />
               </div>
               
-              <div className="mt-6 p-4 bg-muted/50 rounded-lg">
+              <div className="p-4 bg-muted/50 rounded-lg">
                 <h3 className="font-medium mb-2">Comment nous regarder</h3>
                 <ul className="list-disc pl-5 text-sm text-muted-foreground space-y-1">
                   <li>En direct sur ce site web</li>
@@ -161,8 +152,8 @@ const TvLive = () => {
             </div>
           </div>
           
-          <div className="min-w-0">
-            <div className="bg-card p-4 rounded-lg mb-6 border overflow-hidden">
+          <div>
+            <div className="bg-card p-4 rounded-lg border overflow-hidden">
               <h3 className="font-bold mb-4">Articles Récents</h3>
               {isLoadingArticles ? (
                 <div className="space-y-4">
