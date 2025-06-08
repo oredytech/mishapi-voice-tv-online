@@ -6,7 +6,8 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import { WordPressNewsCard } from '@/components/WordPressNewsCard';
-import { fetchWordPressPostsWithPagination, WordPressPost } from '@/services/wordpress';
+import { fetchWordPressPostsWithPagination, fetchWordPressCategoryPostsBySlug, WordPressPost } from '@/services/wordpress';
+import { useWordPressCategories } from '@/hooks/useWordPressCategories';
 import { NewsPagination } from '@/components/NewsPagination';
 import { useToast } from '@/hooks/use-toast';
 
@@ -17,6 +18,8 @@ const ArticlesPage = () => {
   const [totalPages, setTotalPages] = useState(1);
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
   const [searchTerm, setSearchTerm] = useState('');
+  const [selectedCategory, setSelectedCategory] = useState<string>('');
+  const { categories, isLoading: categoriesLoading } = useWordPressCategories();
   const { toast } = useToast();
   const postsPerPage = 12;
 
@@ -24,7 +27,12 @@ const ArticlesPage = () => {
     const loadPosts = async () => {
       setIsLoading(true);
       try {
-        const response = await fetchWordPressPostsWithPagination(currentPage, postsPerPage);
+        let response;
+        if (selectedCategory) {
+          response = await fetchWordPressCategoryPostsBySlug(selectedCategory, currentPage, postsPerPage);
+        } else {
+          response = await fetchWordPressPostsWithPagination(currentPage, postsPerPage);
+        }
         setPosts(response.posts);
         setTotalPages(response.totalPages);
       } catch (error) {
@@ -40,7 +48,7 @@ const ArticlesPage = () => {
     };
 
     loadPosts();
-  }, [currentPage, toast]);
+  }, [currentPage, selectedCategory, toast]);
 
   const handlePageChange = (page: number) => {
     if (page >= 1 && page <= totalPages) {
@@ -49,9 +57,10 @@ const ArticlesPage = () => {
     }
   };
 
-  const categories = [
-    "Toutes", "Politique", "Économie", "Culture", "Société", "Sports", "Santé", "Éducation"
-  ];
+  const handleCategorySelect = (categorySlug: string) => {
+    setSelectedCategory(categorySlug);
+    setCurrentPage(1); // Reset to first page when changing category
+  };
 
   return (
     <>
@@ -104,17 +113,33 @@ const ArticlesPage = () => {
 
         {/* Categories filter */}
         <div className="mb-6 overflow-x-auto pb-2">
-          <div className="flex gap-2">
-            {categories.map((category) => (
+          {categoriesLoading ? (
+            <div className="flex gap-2">
+              {[...Array(6)].map((_, i) => (
+                <div key={i} className="h-8 w-20 bg-muted animate-pulse rounded-full" />
+              ))}
+            </div>
+          ) : (
+            <div className="flex gap-2">
               <Badge 
-                key={category} 
-                variant={category === "Toutes" ? "default" : "outline"}
+                variant={selectedCategory === '' ? "default" : "outline"}
                 className="cursor-pointer whitespace-nowrap"
+                onClick={() => handleCategorySelect('')}
               >
-                {category}
+                Toutes
               </Badge>
-            ))}
-          </div>
+              {categories.map((category) => (
+                <Badge 
+                  key={category.id} 
+                  variant={selectedCategory === category.slug ? "default" : "outline"}
+                  className="cursor-pointer whitespace-nowrap"
+                  onClick={() => handleCategorySelect(category.slug)}
+                >
+                  {category.name}
+                </Badge>
+              ))}
+            </div>
+          )}
         </div>
 
         {/* Articles grid */}
@@ -135,7 +160,9 @@ const ArticlesPage = () => {
         ) : posts.length === 0 ? (
           <div className="text-center py-12">
             <p className="text-lg text-muted-foreground">Aucun article trouvé</p>
-            <Button onClick={() => setCurrentPage(1)} className="mt-4">Retour à la première page</Button>
+            <Button onClick={() => {setCurrentPage(1); setSelectedCategory('');}} className="mt-4">
+              Retour à la première page
+            </Button>
           </div>
         ) : (
           <div className={`grid gap-6 ${
@@ -164,6 +191,11 @@ const ArticlesPage = () => {
 
         <div className="text-center text-muted-foreground text-sm mt-8">
           Affichage de la page {currentPage} sur {totalPages}
+          {selectedCategory && (
+            <span className="ml-2">
+              - Catégorie: {categories.find(cat => cat.slug === selectedCategory)?.name}
+            </span>
+          )}
         </div>
       </div>
     </>
