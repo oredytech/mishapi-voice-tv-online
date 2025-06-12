@@ -18,7 +18,7 @@ export function HeroSection({ setIsRadioPlayerVisible, setIsMishapi24PlayerVisib
       const event = new CustomEvent('autoplay-radio', { 
         detail: { 
           url: "https://stream.zeno.fm/cgxrxyyhjsrtv",
-          title: "MISHAPI VOICE Radio"
+          title: "MISHAPI VOICE / GOMA"
         } 
       });
       window.dispatchEvent(event);
@@ -32,7 +32,7 @@ export function HeroSection({ setIsRadioPlayerVisible, setIsMishapi24PlayerVisib
       const event = new CustomEvent('autoplay-radio', { 
         detail: { 
           url: "https://stream.zeno.fm/t7anwdwtbluuv",
-          title: "MISHAPI 24"
+          title: "RADIO MISHAPI 24 KINSHASA"
         } 
       });
       window.dispatchEvent(event);
@@ -61,11 +61,11 @@ export function HeroSection({ setIsRadioPlayerVisible, setIsMishapi24PlayerVisib
               </Link>
             </Button>
             <Button className="btn-radio" onClick={handleRadioClick}>
-              Écouter la radio en direct
+              RADIO MISHAPI VOICE GOMA
               <ArrowRight size={16} className="ml-2" />
             </Button>
             <Button variant="secondary" onClick={handleMishapi24Click}>
-              Écouter Mishapi 24
+              RADIO MISHAPI 24 KINSHASA
               <ArrowRight size={16} className="ml-2" />
             </Button>
           </div>
