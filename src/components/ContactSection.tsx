@@ -73,7 +73,7 @@ export function ContactSection() {
                   </svg>
                   <div>
                     <p className="font-medium">Télévision</p>
-                    <p className="text-muted-foreground">CANAL+ (canal 363)</p>
+                    <p className="text-muted-foreground">CANAL+ (canal 373)</p>
                   </div>
                 </div>
               </div>
