@@ -327,10 +327,10 @@ export const getFeaturedImageUrl = (post: WordPressPost): string => {
     console.log('Post featured_media ID:', post.featured_media);
     
   //   // Return default image when no featured image is available
-       return 'https://images.unsplash.com/photo-1488590528505-98d2b5aba04b?auto=format&fit=crop&w=800&q=80';
+       return 'public/lovable-uploads/placeholder.png';
        } catch (error) {
          console.error("Error getting featured image URL:", error);
-         return 'https://images.unsplash.com/photo-1488590528505-98d2b5aba04b?auto=format&fit=crop&w=800&q=80';
+         return 'public/lovable-uploads/placeholder.png';
        }
 };
 
