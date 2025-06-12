@@ -33,7 +33,7 @@ export function WordPressNewsCard({ post, variant = 'default' }: WordPressNewsCa
             alt="" 
             className="w-full h-full object-cover"
             onError={(e) => {
-              e.currentTarget.src = '';
+              e.currentTarget.src = '/';
             }}
           />
         </div>
@@ -60,7 +60,7 @@ export function WordPressNewsCard({ post, variant = 'default' }: WordPressNewsCa
             alt=""
             className="w-full h-full object-cover transition-transform group-hover:scale-105"
             onError={(e) => {
-              e.currentTarget.src = '';
+              e.currentTarget.src = '/';
             }}
           />
           <div className="absolute top-2 left-2">
