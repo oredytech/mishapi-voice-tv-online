@@ -39,67 +39,41 @@ export function AudioPlayer({ audioUrl, title }: AudioPlayerProps) {
 
   const getVolumeIcon = () => {
     if (isMuted || volume === 0) {
-      return <VolumeX size={18} />;
+      return <VolumeX size={16} />;
     } else if (volume < 0.33) {
-      return <Volume size={18} />;
+      return <Volume size={16} />;
     } else if (volume < 0.66) {
-      return <Volume1 size={18} />;
+      return <Volume1 size={16} />;
     } else {
-      return <Volume2 size={18} />;
+      return <Volume2 size={16} />;
     }
   };
 
   return (
-    <div className="flex items-center p-3 bg-card border rounded-lg">
+    <div className="flex items-center w-full max-w-4xl mx-auto px-2">
       <Button 
         variant="outline" 
-        size="icon"
-        className={`mr-3 transition-all ${isThisTrackPlaying ? 'bg-primary text-primary-foreground' : ''} ${isLoading ? 'opacity-50' : ''}`}
+        size="sm"
+        className={`mr-2 h-8 w-8 p-0 transition-all flex-shrink-0 ${isThisTrackPlaying ? 'bg-primary text-primary-foreground' : ''} ${isLoading ? 'opacity-50' : ''}`}
         onClick={togglePlay}
         disabled={isLoading}
         title={isThisTrackPlaying ? "Pause" : "Play"}
       >
         {isLoading ? (
-          <div className="w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin" />
+          <div className="w-3 h-3 border-2 border-current border-t-transparent rounded-full animate-spin" />
         ) : isThisTrackPlaying ? (
-          <Pause size={18} />
+          <Pause size={14} />
         ) : (
-          <Play size={18} />
+          <Play size={14} />
         )}
       </Button>
       
-      <div className="flex-1">
-        <div className="flex items-center mb-2">
-          <Button
-            variant="ghost"
-            size="icon"
-            className="mr-2 h-8 w-8"
-            onClick={toggleMute}
-            title={isMuted ? "Unmute" : "Mute"}
-          >
-            {getVolumeIcon()}
-          </Button>
-          <input
-            type="range"
-            min="0"
-            max="1"
-            step="0.01"
-            value={volume}
-            onChange={handleVolumeChange}
-            className="flex-1 h-2 bg-muted rounded-lg appearance-none cursor-pointer slider"
-            style={{
-              background: `linear-gradient(to right, hsl(var(--primary)) 0%, hsl(var(--primary)) ${volume * 100}%, hsl(var(--muted)) ${volume * 100}%, hsl(var(--muted)) 100%)`
-            }}
-          />
-          <span className="ml-2 text-xs text-muted-foreground min-w-[3ch]">
-            {Math.round(volume * 100)}%
-          </span>
-        </div>
-        <div className="text-sm font-medium truncate">
+      <div className="flex-1 min-w-0 mr-2">
+        <div className="text-xs font-medium truncate">
           {title}
           {isThisTrackPlaying && (
-            <span className="ml-2 text-primary flex items-center">
-              <span className="w-2 h-2 bg-primary rounded-full mr-1 animate-pulse"></span>
+            <span className="ml-2 text-primary inline-flex items-center">
+              <span className="w-1.5 h-1.5 bg-primary rounded-full mr-1 animate-pulse"></span>
               En direct
             </span>
           )}
@@ -109,6 +83,33 @@ export function AudioPlayer({ audioUrl, title }: AudioPlayerProps) {
             </span>
           )}
         </div>
+      </div>
+
+      <div className="flex items-center gap-1 flex-shrink-0">
+        <Button
+          variant="ghost"
+          size="sm"
+          className="h-6 w-6 p-0"
+          onClick={toggleMute}
+          title={isMuted ? "Unmute" : "Mute"}
+        >
+          {getVolumeIcon()}
+        </Button>
+        <input
+          type="range"
+          min="0"
+          max="1"
+          step="0.01"
+          value={volume}
+          onChange={handleVolumeChange}
+          className="w-16 h-1 bg-muted rounded-lg appearance-none cursor-pointer slider"
+          style={{
+            background: `linear-gradient(to right, hsl(var(--primary)) 0%, hsl(var(--primary)) ${volume * 100}%, hsl(var(--muted)) ${volume * 100}%, hsl(var(--muted)) 100%)`
+          }}
+        />
+        <span className="text-xs text-muted-foreground min-w-[2ch] text-right">
+          {Math.round(volume * 100)}%
+        </span>
       </div>
     </div>
   );
