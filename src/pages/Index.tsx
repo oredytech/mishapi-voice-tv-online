@@ -4,6 +4,7 @@ import { HeroSection } from '@/components/HeroSection';
 import { NewsSection } from '@/components/NewsSection';
 import LiveSection from '@/components/LiveSection';
 import { YouTubeSection } from '@/components/YouTubeSection';
+import { AboutSection } from '@/components/AboutSection';
 import { ContactSection } from '@/components/ContactSection';
 
 interface IndexProps {
@@ -44,6 +45,9 @@ const Index = ({ setIsGlobalPlayerVisible }: IndexProps) => {
       
       {/* YouTube Videos Section */}
       <YouTubeSection />
+      
+      {/* About Section */}
+      <AboutSection />
       
       {/* Contact Section */}
       <ContactSection />
