@@ -9,6 +9,7 @@ interface AudioContextType {
   } | null;
   volume: number;
   isMuted: boolean;
+  isLoading: boolean;
   playAudio: (url: string, title: string) => void;
   pauseAudio: () => void;
   togglePlay: () => void;
@@ -24,20 +25,24 @@ export function AudioProvider({ children }: { children: React.ReactNode }) {
   const [currentTrack, setCurrentTrack] = useState<{ url: string; title: string } | null>(null);
   const [volume, setVolumeState] = useState(0.7);
   const [isMuted, setIsMuted] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const audioRef = useRef<HTMLAudioElement>(null);
   const previousVolumeRef = useRef(volume);
 
   const playAudio = (url: string, title: string) => {
     if (audioRef.current) {
+      setIsLoading(true);
       if (currentTrack?.url !== url) {
         audioRef.current.src = url;
         setCurrentTrack({ url, title });
       }
       audioRef.current.play().then(() => {
         setIsPlaying(true);
+        setIsLoading(false);
       }).catch(error => {
         console.error("Erreur de lecture audio:", error);
         setIsPlaying(false);
+        setIsLoading(false);
       });
     }
   };
@@ -91,6 +96,7 @@ export function AudioProvider({ children }: { children: React.ReactNode }) {
       currentTrack,
       volume,
       isMuted,
+      isLoading,
       playAudio,
       pauseAudio,
       togglePlay,
@@ -104,7 +110,14 @@ export function AudioProvider({ children }: { children: React.ReactNode }) {
         preload="none"
         onPause={() => setIsPlaying(false)}
         onPlay={() => setIsPlaying(true)}
-        onError={() => setIsPlaying(false)}
+        onError={() => {
+          setIsPlaying(false);
+          setIsLoading(false);
+        }}
+        onLoadStart={() => setIsLoading(true)}
+        onCanPlay={() => setIsLoading(false)}
+        onWaiting={() => setIsLoading(true)}
+        onPlaying={() => setIsLoading(false)}
       />
     </AudioContext.Provider>
   );

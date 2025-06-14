@@ -23,14 +23,19 @@ export function AudioPlayer({ audioUrl, title }: AudioPlayerProps) {
       } else {
         setIsLoading(true);
         playAudio(audioUrl, title);
-        setIsLoading(false);
       }
     } else {
       setIsLoading(true);
       playAudio(audioUrl, title);
-      setIsLoading(false);
     }
   };
+
+  // Écouter les événements de chargement audio
+  useEffect(() => {
+    if (isCurrentTrack && isPlaying) {
+      setIsLoading(false);
+    }
+  }, [isCurrentTrack, isPlaying]);
 
   const handleVolumeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newVolume = parseFloat(e.target.value);
@@ -39,22 +44,22 @@ export function AudioPlayer({ audioUrl, title }: AudioPlayerProps) {
 
   const getVolumeIcon = () => {
     if (isMuted || volume === 0) {
-      return <VolumeX size={16} />;
+      return <VolumeX size={14} />;
     } else if (volume < 0.33) {
-      return <Volume size={16} />;
+      return <Volume size={14} />;
     } else if (volume < 0.66) {
-      return <Volume1 size={16} />;
+      return <Volume1 size={14} />;
     } else {
-      return <Volume2 size={16} />;
+      return <Volume2 size={14} />;
     }
   };
 
   return (
-    <div className="flex items-center w-full max-w-4xl mx-auto px-2">
+    <div className="flex items-center w-full max-w-4xl mx-auto px-2 gap-2">
       <Button 
         variant="outline" 
         size="sm"
-        className={`mr-2 h-8 w-8 p-0 transition-all flex-shrink-0 ${isThisTrackPlaying ? 'bg-primary text-primary-foreground' : ''} ${isLoading ? 'opacity-50' : ''}`}
+        className={`h-7 w-7 p-0 transition-all flex-shrink-0 ${isThisTrackPlaying ? 'bg-primary text-primary-foreground' : ''}`}
         onClick={togglePlay}
         disabled={isLoading}
         title={isThisTrackPlaying ? "Pause" : "Play"}
@@ -62,24 +67,27 @@ export function AudioPlayer({ audioUrl, title }: AudioPlayerProps) {
         {isLoading ? (
           <div className="w-3 h-3 border-2 border-current border-t-transparent rounded-full animate-spin" />
         ) : isThisTrackPlaying ? (
-          <Pause size={14} />
+          <Pause size={12} />
         ) : (
-          <Play size={14} />
+          <Play size={12} />
         )}
       </Button>
       
-      <div className="flex-1 min-w-0 mr-2">
-        <div className="text-xs font-medium truncate">
-          {title}
-          {isThisTrackPlaying && (
+      <div className="flex-1 min-w-0">
+        <div className="text-xs font-medium truncate flex items-center">
+          {isLoading && (
+            <div className="flex items-center mr-2">
+              <div className="w-2 h-2 bg-primary rounded-full animate-pulse mr-1"></div>
+              <span className="text-primary text-xs">Connexion...</span>
+            </div>
+          )}
+          <span className={isLoading ? 'text-muted-foreground' : ''}>
+            {title}
+          </span>
+          {isThisTrackPlaying && !isLoading && (
             <span className="ml-2 text-primary inline-flex items-center">
               <span className="w-1.5 h-1.5 bg-primary rounded-full mr-1 animate-pulse"></span>
               En direct
-            </span>
-          )}
-          {isLoading && (
-            <span className="ml-2 text-muted-foreground text-xs">
-              Connexion...
             </span>
           )}
         </div>
@@ -102,7 +110,7 @@ export function AudioPlayer({ audioUrl, title }: AudioPlayerProps) {
           step="0.01"
           value={volume}
           onChange={handleVolumeChange}
-          className="w-16 h-1 bg-muted rounded-lg appearance-none cursor-pointer slider"
+          className="w-12 h-1 bg-muted rounded-lg appearance-none cursor-pointer slider"
           style={{
             background: `linear-gradient(to right, hsl(var(--primary)) 0%, hsl(var(--primary)) ${volume * 100}%, hsl(var(--muted)) ${volume * 100}%, hsl(var(--muted)) 100%)`
           }}
