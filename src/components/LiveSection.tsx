@@ -68,7 +68,7 @@ export default function LiveSection() {
                 divertissement au cœur de la capitale congolaise, 24h/24.
               </p>
               <Button className="btn-radio bg-accent text-accent-foreground hover:bg-accent/90" asChild>
-                <Link to="/mishapi24" state={{ radioStream: RADIO_STREAMS.mishapi24, radioTitle: "MISHAPI 24" }}>
+                <Link to="/radio" state={{ radioStream: RADIO_STREAMS.mishapi24, radioTitle: "MISHAPI 24" }}>
                   ÉCOUTER 
                   <ArrowRight size={16} className="ml-2" />
                 </Link>
