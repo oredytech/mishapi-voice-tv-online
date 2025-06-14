@@ -10,8 +10,8 @@ export function AboutSection() {
             {/* Image */}
             <div className="order-2 lg:order-1">
               <img 
-                src="/lovable-uploads/3b3a81a2-ea61-4e9f-a9e8-bd127234cbe8.png" 
-                alt="MISHAPI VOICE TV"
+                src="https://images.unsplash.com/photo-1649972904349-6e44c42644a7?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" 
+                alt="À propos de MISHAPI VOICE TV"
                 className="rounded-lg shadow-lg w-full h-auto"
               />
             </div>
