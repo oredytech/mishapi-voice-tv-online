@@ -1,8 +1,8 @@
 
 import { useState } from 'react';
 import { HeroSection } from '@/components/HeroSection';
-import LiveSection from '@/components/LiveSection';
 import { NewsSection } from '@/components/NewsSection';
+import LiveSection from '@/components/LiveSection';
 import { YouTubeSection } from '@/components/YouTubeSection';
 import { ContactSection } from '@/components/ContactSection';
 
@@ -36,11 +36,11 @@ const Index = ({ setIsGlobalPlayerVisible }: IndexProps) => {
         setIsMishapi24PlayerVisible={handleSetMishapi24PlayerVisible}
       />
 
+      {/* News Section - moved right after Hero */}
+      <NewsSection />
+
       {/* Live Section */}
       <LiveSection />
-
-      {/* News Section */}
-      <NewsSection />
       
       {/* YouTube Videos Section */}
       <YouTubeSection />
