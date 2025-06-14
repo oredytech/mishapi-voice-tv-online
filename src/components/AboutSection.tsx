@@ -1,7 +1,5 @@
-
 export function AboutSection() {
-  return (
-    <section className="py-16 bg-background">
+  return <section className="py-16 bg-background">
       <div className="container-custom">
         <div className="max-w-4xl mx-auto">
           <h2 className="section-title text-center mb-12">À propos de nous</h2>
@@ -9,11 +7,7 @@ export function AboutSection() {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
             {/* Image */}
             <div className="order-2 lg:order-1">
-              <img 
-                src="https://images.unsplash.com/photo-1649972904349-6e44c42644a7?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" 
-                alt="À propos de MISHAPI VOICE TV"
-                className="rounded-lg shadow-lg w-full h-auto"
-              />
+              <img alt="À propos de MISHAPI VOICE TV" className="rounded-lg shadow-lg w-full h-auto" src="/lovable-uploads/f78b3cb7-4e7f-4e7b-b90f-e89b4e0cea99.png" />
             </div>
             
             {/* Contenu */}
@@ -69,6 +63,5 @@ export function AboutSection() {
           </div>
         </div>
       </div>
-    </section>
-  );
+    </section>;
 }
