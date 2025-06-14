@@ -5,18 +5,35 @@ import LiveSection from '@/components/LiveSection';
 import { NewsSection } from '@/components/NewsSection';
 import { YouTubeSection } from '@/components/YouTubeSection';
 import { ContactSection } from '@/components/ContactSection';
-import FloatingPlayer from '@/components/FloatingPlayer';
 
-const Index = () => {
+interface IndexProps {
+  setIsGlobalPlayerVisible?: (isVisible: boolean) => void;
+}
+
+const Index = ({ setIsGlobalPlayerVisible }: IndexProps) => {
   const [isRadioPlayerVisible, setIsRadioPlayerVisible] = useState(false);
   const [isMishapi24PlayerVisible, setIsMishapi24PlayerVisible] = useState(false);
+
+  const handleSetRadioPlayerVisible = (isVisible: boolean) => {
+    setIsRadioPlayerVisible(isVisible);
+    if (setIsGlobalPlayerVisible) {
+      setIsGlobalPlayerVisible(isVisible);
+    }
+  };
+
+  const handleSetMishapi24PlayerVisible = (isVisible: boolean) => {
+    setIsMishapi24PlayerVisible(isVisible);
+    if (setIsGlobalPlayerVisible) {
+      setIsGlobalPlayerVisible(isVisible);
+    }
+  };
 
   return (
     <div className="min-h-screen">
       {/* Hero Section */}
       <HeroSection 
-        setIsRadioPlayerVisible={setIsRadioPlayerVisible}
-        setIsMishapi24PlayerVisible={setIsMishapi24PlayerVisible}
+        setIsRadioPlayerVisible={handleSetRadioPlayerVisible}
+        setIsMishapi24PlayerVisible={handleSetMishapi24PlayerVisible}
       />
 
       {/* Live Section */}
@@ -30,21 +47,6 @@ const Index = () => {
       
       {/* Contact Section */}
       <ContactSection />
-
-      {/* Floating Radio Players */}
-      <FloatingPlayer 
-        isVisible={isRadioPlayerVisible} 
-        onClose={() => setIsRadioPlayerVisible(false)} 
-        audioUrl="https://stream.zeno.fm/cgxrxyyhjsrtv" 
-        title="MISHAPI VOICE Radio" 
-      />
-      
-      <FloatingPlayer 
-        isVisible={isMishapi24PlayerVisible} 
-        onClose={() => setIsMishapi24PlayerVisible(false)} 
-        audioUrl="https://stream.zeno.fm/t7anwdwtbluuv" 
-        title="MISHAPI 24" 
-      />
     </div>
   );
 };

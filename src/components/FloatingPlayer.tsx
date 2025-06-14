@@ -11,46 +11,41 @@ interface FloatingPlayerProps {
   title: string;
 }
 
-export default function FloatingPlayer({ 
-  isVisible, 
-  onClose, 
-  audioUrl, 
-  title 
-}: FloatingPlayerProps) {
+export default function FloatingPlayer({ onClose }: Partial<FloatingPlayerProps>) {
   const [isMinimized, setIsMinimized] = useState(false);
   const { currentTrack, isPlaying } = useAudio();
 
   // Afficher le lecteur flottant seulement s'il y a une piste en cours de lecture
-  if (!isVisible || !currentTrack || !isPlaying) return null;
+  if (!currentTrack || !isPlaying) return null;
 
   return (
     <div className="fixed bottom-0 left-0 right-0 z-50 bg-background border-t shadow-lg">
       <div className="container mx-auto max-w-4xl">
-        <div className="flex items-center justify-between h-16">
+        <div className="flex items-center justify-between h-12">
           <button 
             onClick={() => setIsMinimized(!isMinimized)} 
-            className="p-2 hover:bg-muted rounded-none transition-colors flex-shrink-0"
+            className="p-1 hover:bg-muted rounded-none transition-colors flex-shrink-0"
             title={isMinimized ? "Agrandir" : "Réduire"}
           >
-            {isMinimized ? <ChevronUp size={18} /> : <ChevronDown size={18} />}
+            {isMinimized ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
           </button>
           
           <div className={`flex-1 px-2 transition-all duration-300 ease-in-out ${
             isMinimized 
               ? "max-h-0 opacity-0 overflow-hidden" 
-              : "max-h-12 opacity-100"
+              : "max-h-10 opacity-100"
           }`}>
-            <div className="flex items-center justify-center h-12">
+            <div className="flex items-center justify-center h-10">
               <AudioPlayer audioUrl={currentTrack.url} title={currentTrack.title} />
             </div>
           </div>
           
           <button 
             onClick={onClose} 
-            className="p-2 hover:bg-muted rounded-none transition-colors flex-shrink-0"
+            className="p-1 hover:bg-muted rounded-none transition-colors flex-shrink-0"
             title="Fermer"
           >
-            <X size={18} />
+            <X size={16} />
           </button>
         </div>
       </div>

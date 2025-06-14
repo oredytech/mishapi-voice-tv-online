@@ -7,8 +7,10 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { ThemeProvider } from "@/hooks/useTheme";
 import { AudioProvider } from "@/contexts/AudioContext";
 import { HelmetProvider } from "react-helmet-async";
+import { useState } from "react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import FloatingPlayer from "@/components/FloatingPlayer";
 import Index from "@/pages/Index";
 import ArticlePage from "@/pages/ArticlePage";
 import ArticlesPage from "@/pages/ArticlesPage";
@@ -32,6 +34,43 @@ const queryClient = new QueryClient({
   },
 });
 
+function AppContent() {
+  const [isGlobalPlayerVisible, setIsGlobalPlayerVisible] = useState(false);
+
+  return (
+    <div className="flex flex-col min-h-screen">
+      <Navbar />
+      <main className="flex-1">
+        <Routes>
+          <Route path="/" element={<Index setIsGlobalPlayerVisible={setIsGlobalPlayerVisible} />} />
+          <Route path="/tv" element={<TvLive />} />
+          <Route path="/radio" element={<RadioLive />} />
+          <Route path="/mishapi24" element={<Mishapi24 />} />
+          <Route path="/videos" element={<VideosPage />} />
+          <Route path="/contact" element={<ContactPage />} />
+          <Route path="/actualites" element={<ArticlesPage />} />
+          <Route path="/actualites/categorie/:categorySlug" element={<CategoryPage />} />
+          {/* Article routes - specific article slug pattern to avoid conflicts */}
+          <Route path="/article/:slug" element={<ArticlePage />} />
+          {/* Fallback route for direct slug access (for legacy URLs and direct sharing) */}
+          <Route path="/:slug" element={<ArticlePage />} />
+          {/* 404 catch-all - MUST be last */}
+          <Route path="*" element={<NotFound />} />
+        </Routes>
+      </main>
+      <Footer />
+      
+      {/* Global Floating Player - always visible when audio is playing */}
+      <FloatingPlayer 
+        isVisible={true} 
+        onClose={() => setIsGlobalPlayerVisible(false)} 
+        audioUrl="" 
+        title="" 
+      />
+    </div>
+  );
+}
+
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <ThemeProvider>
@@ -41,28 +80,7 @@ const App = () => (
             <Toaster />
             <Sonner />
             <BrowserRouter>
-              <div className="flex flex-col min-h-screen">
-                <Navbar />
-                <main className="flex-1">
-                  <Routes>
-                    <Route path="/" element={<Index />} />
-                    <Route path="/tv" element={<TvLive />} />
-                    <Route path="/radio" element={<RadioLive />} />
-                    <Route path="/mishapi24" element={<Mishapi24 />} />
-                    <Route path="/videos" element={<VideosPage />} />
-                    <Route path="/contact" element={<ContactPage />} />
-                    <Route path="/actualites" element={<ArticlesPage />} />
-                    <Route path="/actualites/categorie/:categorySlug" element={<CategoryPage />} />
-                    {/* Article routes - specific article slug pattern to avoid conflicts */}
-                    <Route path="/article/:slug" element={<ArticlePage />} />
-                    {/* Fallback route for direct slug access (for legacy URLs and direct sharing) */}
-                    <Route path="/:slug" element={<ArticlePage />} />
-                    {/* 404 catch-all - MUST be last */}
-                    <Route path="*" element={<NotFound />} />
-                  </Routes>
-                </main>
-                <Footer />
-              </div>
+              <AppContent />
             </BrowserRouter>
           </TooltipProvider>
         </HelmetProvider>

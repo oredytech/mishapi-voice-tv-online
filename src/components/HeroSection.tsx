@@ -1,8 +1,8 @@
-
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { useAudio } from '@/contexts/AudioContext';
 import FloatingPlayer from '@/components/FloatingPlayer';
 
 interface HeroSectionProps {
@@ -11,32 +11,16 @@ interface HeroSectionProps {
 }
 
 export function HeroSection({ setIsRadioPlayerVisible, setIsMishapi24PlayerVisible }: HeroSectionProps) {
+  const { playAudio } = useAudio();
+
   const handleRadioClick = () => {
+    playAudio("https://stream.zeno.fm/cgxrxyyhjsrtv", "MISHAPI VOICE / GOMA");
     setIsRadioPlayerVisible(true);
-    // Petit délai pour s'assurer que le player est monté avant de démarrer
-    setTimeout(() => {
-      const event = new CustomEvent('autoplay-radio', { 
-        detail: { 
-          url: "https://stream.zeno.fm/cgxrxyyhjsrtv",
-          title: "MISHAPI VOICE / GOMA"
-        } 
-      });
-      window.dispatchEvent(event);
-    }, 100);
   };
 
   const handleMishapi24Click = () => {
+    playAudio("https://stream.zeno.fm/t7anwdwtbluuv", "RADIO MISHAPI 24 KINSHASA");
     setIsMishapi24PlayerVisible(true);
-    // Petit délai pour s'assurer que le player est monté avant de démarrer
-    setTimeout(() => {
-      const event = new CustomEvent('autoplay-radio', { 
-        detail: { 
-          url: "https://stream.zeno.fm/t7anwdwtbluuv",
-          title: "RADIO MISHAPI 24 KINSHASA"
-        } 
-      });
-      window.dispatchEvent(event);
-    }, 100);
   };
 
   return (
