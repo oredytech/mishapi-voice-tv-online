@@ -10,11 +10,13 @@ interface AudioContextType {
   volume: number;
   isMuted: boolean;
   isLoading: boolean;
+  isVideoPlaying: boolean;
   playAudio: (url: string, title: string) => void;
   pauseAudio: () => void;
   togglePlay: () => void;
   setVolume: (volume: number) => void;
   toggleMute: () => void;
+  setVideoPlaying: (isPlaying: boolean) => void;
   audioRef: React.RefObject<HTMLAudioElement>;
 }
 
@@ -26,11 +28,17 @@ export function AudioProvider({ children }: { children: React.ReactNode }) {
   const [volume, setVolumeState] = useState(0.7);
   const [isMuted, setIsMuted] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [isVideoPlaying, setIsVideoPlaying] = useState(false);
   const audioRef = useRef<HTMLAudioElement>(null);
   const previousVolumeRef = useRef(volume);
 
   const playAudio = (url: string, title: string) => {
     if (audioRef.current) {
+      // Stop video if it's playing
+      if (isVideoPlaying) {
+        setIsVideoPlaying(false);
+      }
+      
       setIsLoading(true);
       if (currentTrack?.url !== url) {
         audioRef.current.src = url;
@@ -84,6 +92,14 @@ export function AudioProvider({ children }: { children: React.ReactNode }) {
     }
   };
 
+  const setVideoPlaying = (playing: boolean) => {
+    setIsVideoPlaying(playing);
+    // Stop audio if video starts playing
+    if (playing && isPlaying) {
+      pauseAudio();
+    }
+  };
+
   useEffect(() => {
     if (audioRef.current) {
       audioRef.current.volume = volume;
@@ -97,11 +113,13 @@ export function AudioProvider({ children }: { children: React.ReactNode }) {
       volume,
       isMuted,
       isLoading,
+      isVideoPlaying,
       playAudio,
       pauseAudio,
       togglePlay,
       setVolume,
       toggleMute,
+      setVideoPlaying,
       audioRef
     }}>
       {children}
