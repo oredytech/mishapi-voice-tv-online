@@ -5,8 +5,8 @@ import { Link } from "react-router-dom";
 
 // Définition des liens de streaming pour les radios
 const RADIO_STREAMS = {
-  mishapiVoice: "https://stream.zeno.fm/cgxrxyyhjsrtv",
-  mishapi24: "https://stream.zeno.fm/t7anwdwtbluuv"
+  mishapiVoice: "https://stream.zeno.fm/qbuyvkgh14dtv",
+  mishapi24: "https://stream.zeno.fm/xrnu3pkzatqtv"
 };
 
 export default function LiveSection() {
