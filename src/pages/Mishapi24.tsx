@@ -20,11 +20,6 @@ const Mishapi24 = () => {
               />
               
               <div className="mt-4 flex items-start justify-between">
-                <div>
-                  <h2 className="text-xl font-bold">En direct maintenant</h2>
-                  <h3 className="text-lg font-medium mt-1">Journal International</h3>
-                  <p className="text-muted-foreground text-sm">Avec Jean Kabongo</p>
-                </div>
                 <Button variant="outline" className="flex items-center gap-2">
                   <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" x2="12" y1="3" y2="15"/></svg>
                   Partager
@@ -46,7 +41,7 @@ const Mishapi24 = () => {
                 <h3 className="font-medium mb-2">Comment nous regarder</h3>
                 <ul className="list-disc pl-5 text-sm text-muted-foreground space-y-1">
                   <li>En direct sur ce site web</li>
-                  <li>Sur CANAL+ (canal 366)</li>
+                  <li>Sur CANAL+ (canal 373)</li>
                   <li>Sur notre application mobile (Android & iOS)</li>
                   <li>Sur nos plateformes de médias sociaux</li>
                 </ul>
