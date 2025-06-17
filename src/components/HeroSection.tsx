@@ -14,12 +14,12 @@ export function HeroSection({ setIsRadioPlayerVisible, setIsMishapi24PlayerVisib
   const { playAudio } = useAudio();
 
   const handleRadioClick = () => {
-    playAudio("https://stream.zeno.fm/cgxrxyyhjsrtv", "MISHAPI VOICE / GOMA");
+    playAudio("https://stream.zeno.fm/qbuyvkgh14dtv", "MISHAPI VOICE / GOMA");
     setIsRadioPlayerVisible(true);
   };
 
   const handleMishapi24Click = () => {
-    playAudio("https://stream.zeno.fm/t7anwdwtbluuv", "RADIO MISHAPI 24 KINSHASA");
+    playAudio("https://stream.zeno.fm/xrnu3pkzatqtv", "RADIO MISHAPI 24 KINSHASA");
     setIsMishapi24PlayerVisible(true);
   };
 
