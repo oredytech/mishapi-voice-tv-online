@@ -48,7 +48,7 @@ export default function LiveSection() {
                 Des programmes variés et de la musique africaine pour vous accompagner.
               </p>
               <Button className="btn-radio" asChild>
-                <Link to="/radio" state={{ radioStream: RADIO_STREAMS.mishapiVoice, radioTitle: "MISHAPI VOICE Radio" }}>
+                <Link to="/radio" state={{ radioStream: RADIO_STREAMS.mishapiVoice, radioTitle: "MISHAPI VOICE / GOMA" }}>
                   ÉCOUTER
                   <ArrowRight size={16} className="ml-2" />
                 </Link>
@@ -68,7 +68,7 @@ export default function LiveSection() {
                 divertissement au cœur de la capitale congolaise, 24h/24.
               </p>
               <Button className="btn-radio bg-accent text-accent-foreground hover:bg-accent/90" asChild>
-                <Link to="/radio" state={{ radioStream: RADIO_STREAMS.mishapi24, radioTitle: "MISHAPI 24" }}>
+                <Link to="/radio" state={{ radioStream: RADIO_STREAMS.mishapi24, radioTitle: "MISHAPI 24 KINSHASA" }}>
                   ÉCOUTER 
                   <ArrowRight size={16} className="ml-2" />
                 </Link>
