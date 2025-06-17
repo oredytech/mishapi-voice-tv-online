@@ -69,11 +69,10 @@ const RadioLive = () => {
                     ML
                   </div>
                   <div>
-                    <h3 className="text-lg font-medium">Parole aux auditeurs</h3>
-                    <p className="text-muted-foreground text-sm mb-2">Animé par Marie Lusamba</p>
+                    <h3 className="text-lg font-medium"></h3>
+                    <p className="text-muted-foreground text-sm mb-2"></p>
                     <p className="text-sm">
-                      L'émission interactive où les auditeurs prennent la parole sur les sujets d'actualité. 
-                      Aujourd'hui: "Comment améliorer l'accès à l'eau potable dans les zones rurales?"
+                      
                     </p>
                     <div className="mt-3 flex items-center">
                       <span className="text-sm text-primary flex items-center">
