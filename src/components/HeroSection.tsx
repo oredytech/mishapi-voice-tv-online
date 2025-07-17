@@ -58,7 +58,7 @@ export function HeroSection({ setIsRadioPlayerVisible, setIsMishapi24PlayerVisib
             <div className="flex items-center justify-center">
               <div className="flex items-center justify-center px-3 py-1 border border-white/20 bg-black/50 backdrop-blur-sm rounded-md">
                 <img alt="Canal+" className="h-5 mr-2" src="/lovable-uploads/4cb2b446-5308-4cf3-a5d6-71657789fd7d.jpg" />
-                <span className="text-sm text-white">Canal 373</span>
+                <span className="text-sm text-white">Canal 610</span>
               </div>
             </div>
           </div>
