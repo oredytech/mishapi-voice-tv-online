@@ -104,7 +104,7 @@ export default function Footer() {
         <div className="mt-8 py-6 border-t border-border text-center text-sm text-muted-foreground">
           <p>© {currentYear} MISHAPI VOICE TV. Tous droits réservés.</p>
           <div className="flex justify-center mt-2 space-x-4">
-            <Link to="/" className="hover:text-primary">
+            <Link to="/https://oredytech.com" className="hover:text-primary">
               Fièrement conçu par
             </Link>
             <Link to="https://oredytech.com" className="hover:text-primary">
