@@ -14,7 +14,7 @@ export default function Footer() {
               sur le développement de la République Démocratique du Congo et de toute l'Afrique.
             </p>
             <p className="text-sm font-medium">
-              Disponible sur CANAL+ (canal 363)
+              Disponible sur CANAL+ (canal 610)
             </p>
           </div>
 
