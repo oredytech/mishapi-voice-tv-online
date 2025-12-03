@@ -3,6 +3,7 @@ import { useEffect, useRef, useState } from 'react';
 import { useAudio } from '@/contexts/AudioContext';
 import Hls from 'hls.js';
 import { Play, Pause, Volume2, VolumeX, Maximize, Minimize } from 'lucide-react';
+import { Slider } from '@/components/ui/slider';
 
 interface VideoPlayerProps {
   videoUrl?: string;
@@ -20,14 +21,16 @@ export function VideoPlayer({
   const hlsRef = useRef<Hls | null>(null);
   
   const [isPlaying, setIsPlaying] = useState(false);
+  const [volume, setVolume] = useState(0.8);
   const [isMuted, setIsMuted] = useState(true);
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [showControls, setShowControls] = useState(true);
   const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const [showVolumeSlider, setShowVolumeSlider] = useState(false);
   
   const { setVideoPlaying } = useAudio();
   const controlsTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const volumeTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
     const video = videoRef.current;
@@ -38,7 +41,12 @@ export function VideoPlayer({
         const hls = new Hls({
           enableWorker: true,
           lowLatencyMode: true,
-          backBufferLength: 90
+          backBufferLength: 90,
+          maxBufferLength: 30,
+          maxMaxBufferLength: 600,
+          fragLoadingMaxRetry: 10,
+          manifestLoadingMaxRetry: 10,
+          levelLoadingMaxRetry: 10
         });
         
         hlsRef.current = hls;
@@ -48,7 +56,6 @@ export function VideoPlayer({
         hls.on(Hls.Events.MANIFEST_PARSED, () => {
           setIsLoading(false);
           video.play().catch(() => {
-            // Autoplay blocked, user needs to click
             setIsPlaying(false);
           });
         });
@@ -57,29 +64,24 @@ export function VideoPlayer({
           if (data.fatal) {
             switch (data.type) {
               case Hls.ErrorTypes.NETWORK_ERROR:
-                setError("Erreur réseau - Tentative de reconnexion...");
                 hls.startLoad();
                 break;
               case Hls.ErrorTypes.MEDIA_ERROR:
-                setError("Erreur média - Récupération en cours...");
                 hls.recoverMediaError();
                 break;
               default:
-                setError("Impossible de charger le flux vidéo");
                 hls.destroy();
+                setTimeout(() => initPlayer(), 3000);
                 break;
             }
           }
         });
       } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
-        // Native HLS support (Safari)
         video.src = videoUrl;
         video.addEventListener('loadedmetadata', () => {
           setIsLoading(false);
           video.play().catch(() => setIsPlaying(false));
         });
-      } else {
-        setError("Votre navigateur ne supporte pas la lecture HLS");
       }
     };
 
@@ -94,12 +96,10 @@ export function VideoPlayer({
     };
   }, [videoUrl, setVideoPlaying]);
 
-  // Sync play state with audio context
   useEffect(() => {
     setVideoPlaying(isPlaying);
   }, [isPlaying, setVideoPlaying]);
 
-  // Video event listeners
   useEffect(() => {
     const video = videoRef.current;
     if (!video) return;
@@ -122,7 +122,6 @@ export function VideoPlayer({
     };
   }, []);
 
-  // Fullscreen handling
   useEffect(() => {
     const handleFullscreenChange = () => {
       setIsFullscreen(!!document.fullscreenElement);
@@ -131,6 +130,14 @@ export function VideoPlayer({
     document.addEventListener('fullscreenchange', handleFullscreenChange);
     return () => document.removeEventListener('fullscreenchange', handleFullscreenChange);
   }, []);
+
+  // Apply volume to video
+  useEffect(() => {
+    const video = videoRef.current;
+    if (video) {
+      video.volume = volume;
+    }
+  }, [volume]);
 
   const togglePlay = () => {
     const video = videoRef.current;
@@ -149,6 +156,15 @@ export function VideoPlayer({
 
     video.muted = !video.muted;
     setIsMuted(video.muted);
+  };
+
+  const handleVolumeChange = (value: number[]) => {
+    const newVolume = value[0];
+    setVolume(newVolume);
+    if (videoRef.current) {
+      videoRef.current.muted = newVolume === 0;
+      setIsMuted(newVolume === 0);
+    }
   };
 
   const toggleFullscreen = () => {
@@ -172,6 +188,19 @@ export function VideoPlayer({
     }, 3000);
   };
 
+  const handleVolumeMouseEnter = () => {
+    if (volumeTimeoutRef.current) {
+      clearTimeout(volumeTimeoutRef.current);
+    }
+    setShowVolumeSlider(true);
+  };
+
+  const handleVolumeMouseLeave = () => {
+    volumeTimeoutRef.current = setTimeout(() => {
+      setShowVolumeSlider(false);
+    }, 300);
+  };
+
   return (
     <div 
       ref={containerRef} 
@@ -189,36 +218,13 @@ export function VideoPlayer({
           onClick={togglePlay}
         />
         
-        {/* Loading spinner */}
         {isLoading && (
           <div className="absolute inset-0 flex items-center justify-center bg-black/50">
             <div className="w-12 h-12 border-4 border-primary border-t-transparent rounded-full animate-spin" />
           </div>
         )}
 
-        {/* Error message */}
-        {error && (
-          <div className="absolute inset-0 flex items-center justify-center bg-black/80">
-            <div className="text-center p-4">
-              <p className="text-white mb-2">{error}</p>
-              <button 
-                onClick={() => {
-                  setError(null);
-                  setIsLoading(true);
-                  if (hlsRef.current) {
-                    hlsRef.current.startLoad();
-                  }
-                }}
-                className="px-4 py-2 bg-primary text-primary-foreground rounded-md hover:bg-primary/90"
-              >
-                Réessayer
-              </button>
-            </div>
-          </div>
-        )}
-
-        {/* Play button overlay */}
-        {!isPlaying && !isLoading && !error && (
+        {!isPlaying && !isLoading && (
           <div 
             className="absolute inset-0 flex items-center justify-center bg-black/30 cursor-pointer"
             onClick={togglePlay}
@@ -230,7 +236,6 @@ export function VideoPlayer({
         )}
       </div>
       
-      {/* Controls bar */}
       <div 
         className={`absolute bottom-0 left-0 right-0 p-3 bg-gradient-to-t from-black/90 to-transparent transition-opacity duration-300 ${
           showControls ? 'opacity-100' : 'opacity-0'
@@ -242,9 +247,30 @@ export function VideoPlayer({
               {isPlaying ? <Pause className="w-5 h-5" /> : <Play className="w-5 h-5" />}
             </button>
             
-            <button onClick={toggleMute} className="text-white hover:text-primary transition-colors">
-              {isMuted ? <VolumeX className="w-5 h-5" /> : <Volume2 className="w-5 h-5" />}
-            </button>
+            <div 
+              className="relative flex items-center"
+              onMouseEnter={handleVolumeMouseEnter}
+              onMouseLeave={handleVolumeMouseLeave}
+            >
+              <button onClick={toggleMute} className="text-white hover:text-primary transition-colors">
+                {isMuted || volume === 0 ? <VolumeX className="w-5 h-5" /> : <Volume2 className="w-5 h-5" />}
+              </button>
+              
+              <div 
+                className={`ml-2 transition-all duration-200 overflow-hidden ${
+                  showVolumeSlider ? 'w-20 opacity-100' : 'w-0 opacity-0'
+                }`}
+              >
+                <Slider
+                  value={[isMuted ? 0 : volume]}
+                  min={0}
+                  max={1}
+                  step={0.01}
+                  onValueChange={handleVolumeChange}
+                  className="w-20"
+                />
+              </div>
+            </div>
             
             <span className="flex items-center text-white text-xs">
               <span className="w-2 h-2 bg-red-500 rounded-full mr-1 animate-pulse"></span>
