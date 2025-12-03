@@ -22,10 +22,9 @@ export function VideoPlayer({
   
   const [isPlaying, setIsPlaying] = useState(false);
   const [volume, setVolume] = useState(0.8);
-  const [isMuted, setIsMuted] = useState(true);
+  const [isMuted, setIsMuted] = useState(false);
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [showControls, setShowControls] = useState(true);
-  const [isLoading, setIsLoading] = useState(true);
   const [showVolumeSlider, setShowVolumeSlider] = useState(false);
   
   const { setVideoPlaying } = useAudio();
@@ -36,56 +35,21 @@ export function VideoPlayer({
     const video = videoRef.current;
     if (!video) return;
 
-    const initPlayer = () => {
-      if (Hls.isSupported()) {
-        const hls = new Hls({
-          enableWorker: true,
-          lowLatencyMode: true,
-          backBufferLength: 90,
-          maxBufferLength: 30,
-          maxMaxBufferLength: 600,
-          fragLoadingMaxRetry: 10,
-          manifestLoadingMaxRetry: 10,
-          levelLoadingMaxRetry: 10
-        });
-        
-        hlsRef.current = hls;
-        hls.loadSource(videoUrl);
-        hls.attachMedia(video);
-        
-        hls.on(Hls.Events.MANIFEST_PARSED, () => {
-          setIsLoading(false);
-          video.play().catch(() => {
-            setIsPlaying(false);
-          });
-        });
-        
-        hls.on(Hls.Events.ERROR, (_, data) => {
-          if (data.fatal) {
-            switch (data.type) {
-              case Hls.ErrorTypes.NETWORK_ERROR:
-                hls.startLoad();
-                break;
-              case Hls.ErrorTypes.MEDIA_ERROR:
-                hls.recoverMediaError();
-                break;
-              default:
-                hls.destroy();
-                setTimeout(() => initPlayer(), 3000);
-                break;
-            }
-          }
-        });
-      } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
-        video.src = videoUrl;
-        video.addEventListener('loadedmetadata', () => {
-          setIsLoading(false);
-          video.play().catch(() => setIsPlaying(false));
-        });
-      }
-    };
-
-    initPlayer();
+    // Si le navigateur supporte HLS nativement (Safari)
+    if (video.canPlayType('application/vnd.apple.mpegurl')) {
+      video.src = videoUrl;
+      video.play().catch(() => setIsPlaying(false));
+    } 
+    // Sinon utiliser HLS.js
+    else if (Hls.isSupported()) {
+      const hls = new Hls();
+      hlsRef.current = hls;
+      hls.loadSource(videoUrl);
+      hls.attachMedia(video);
+      hls.on(Hls.Events.MANIFEST_PARSED, () => {
+        video.play().catch(() => setIsPlaying(false));
+      });
+    }
 
     return () => {
       if (hlsRef.current) {
@@ -106,19 +70,13 @@ export function VideoPlayer({
 
     const handlePlay = () => setIsPlaying(true);
     const handlePause = () => setIsPlaying(false);
-    const handleWaiting = () => setIsLoading(true);
-    const handlePlaying = () => setIsLoading(false);
 
     video.addEventListener('play', handlePlay);
     video.addEventListener('pause', handlePause);
-    video.addEventListener('waiting', handleWaiting);
-    video.addEventListener('playing', handlePlaying);
 
     return () => {
       video.removeEventListener('play', handlePlay);
       video.removeEventListener('pause', handlePause);
-      video.removeEventListener('waiting', handleWaiting);
-      video.removeEventListener('playing', handlePlaying);
     };
   }, []);
 
@@ -131,7 +89,6 @@ export function VideoPlayer({
     return () => document.removeEventListener('fullscreenchange', handleFullscreenChange);
   }, []);
 
-  // Apply volume to video
   useEffect(() => {
     const video = videoRef.current;
     if (video) {
@@ -211,20 +168,17 @@ export function VideoPlayer({
       <div className="relative w-full" style={{ paddingBottom: '56.25%' }}>
         <video
           ref={videoRef}
+          id="tv-stream"
           className="absolute top-0 left-0 w-full h-full object-contain"
           poster={poster}
           muted={isMuted}
           playsInline
+          autoPlay
+          controls={false}
           onClick={togglePlay}
         />
-        
-        {isLoading && (
-          <div className="absolute inset-0 flex items-center justify-center bg-black/50">
-            <div className="w-12 h-12 border-4 border-primary border-t-transparent rounded-full animate-spin" />
-          </div>
-        )}
 
-        {!isPlaying && !isLoading && (
+        {!isPlaying && (
           <div 
             className="absolute inset-0 flex items-center justify-center bg-black/30 cursor-pointer"
             onClick={togglePlay}
